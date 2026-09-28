@@ -46,6 +46,9 @@ h3{font:600 21px/1.2 "Playfair Display",serif;margin:1.4em 0 .5em}
 .person header{display:flex;gap:14px;align-items:center;padding:0;color:var(--ink)}
 .mono{flex:none;width:58px;height:58px;border-radius:50%;background:var(--ink);color:var(--paper);display:grid;place-items:center;
   font:600 22px "Playfair Display",serif;border:3px double var(--brass)}
+/* portraits: round crop also hides the generator's corner watermark */
+img.mono{width:84px;height:84px;object-fit:cover;object-position:50% 30%}
+.victim{float:right;width:150px;height:150px;border-radius:50%;object-fit:cover;object-position:50% 30%;margin:0 0 12px 18px;border:3px double var(--brass)}
 .person h3{margin:0;font-size:21px}
 .person .role{font-size:15px;color:var(--muted);font-style:italic}
 .facts{font:13px/1.6 "Special Elite",monospace;color:var(--muted);margin:10px 0}

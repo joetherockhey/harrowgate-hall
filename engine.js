@@ -53,7 +53,7 @@ function renderSuspects() {
       const stm = evidence().filter(e => e.who === p.id);
       return `<article class="person">
         ${m !== 'unk' ? `<span class="stamp-mark ${m}">${m === 'sus' ? 'SUSPECT' : 'CLEARED'}</span>` : ''}
-        <header><div class="mono">${p.name.split(' ').filter(w => w !== 'Dr' && w !== 'Mrs').map(w => w[0]).join('')}</div>
+        <header><img class="mono" src="img/${p.id}.jpg" alt="${p.name}" loading="lazy">
           <div><h3>${p.name}</h3><div class="role">${p.role}</div></div></header>
         <div class="facts">Age ${p.age} · Height ${p.height}</div>
         <p>${p.bio}</p>
