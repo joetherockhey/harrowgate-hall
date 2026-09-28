@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Death on Gull Rock</title>
+<meta name="description" content="A sample murder mystery: a lighthouse keeper, a gale, and a log that lies.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,800;1,600&family=Crimson+Pro:ital,wght@0,400;0,600;1,400&family=Special+Elite&family=Caveat:wght@500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<a class="corner" href="index.html">← Main case</a>
+
+<div id="cover">
+  <div class="folder">
+    <span class="conf">Sample case</span>
+    <h1>Death on Gull Rock</h1>
+    <p>Devon &amp; Cornwall Constabulary · August, 1978.<br>A lighthouse keeper lies at the foot of his own stair. Everyone says he fell.</p>
+    <p style="font-size:16px">For two detectives · three stages · about ten minutes</p>
+    <button class="btn" id="open-file">Open the file</button>
+  </div>
+</div>
+
+<div class="wrap">
+  <header>
+    <div class="eyebrow">Sample case · Devon &amp; Cornwall Constabulary</div>
+    <h1>Death on <i>Gull Rock</i></h1>
+    <div class="meta">
+      <span class="pips" id="pips" aria-label="Progress"></span>
+      <span id="stage-label"></span>
+      <span id="clock">⏱ 00:00</span>
+      <button class="linkish" id="reset">Start over</button>
+    </div>
+    <nav role="tablist" id="tabs">
+      <button role="tab" data-tab="brief">Briefing</button>
+      <button role="tab" data-tab="map">Map</button>
+      <button role="tab" data-tab="suspects">Suspects</button>
+      <button role="tab" data-tab="evidence">Evidence</button>
+      <button role="tab" data-tab="notes">Notebook</button>
+      <button role="tab" data-tab="solve">Solve</button>
+    </nav>
+  </header>
+  <main>
+    <section id="brief"></section>
+    <section id="map">
+      <div class="map-wrap">
+        <svg class="map" viewBox="0 0 1000 700" role="img" aria-label="Chart of Gull Rock">
+          <defs>
+            <pattern id="seapat" width="40" height="20" patternUnits="userSpaceOnUse"><rect width="40" height="20" fill="#dbe6eb"/><path d="M0 12 q10 -6 20 0 t20 0" stroke="#b9cdd6" fill="none"/></pattern>
+            <pattern id="grasspat" width="16" height="16" patternUnits="userSpaceOnUse"><rect width="16" height="16" fill="#eef1e4"/><path d="M3 12 l2-4 m4 6 l2-4" stroke="#b9c3a0" stroke-width="1"/></pattern>
+          </defs>
+          <rect width="1000" height="700" fill="url(#seapat)"/>
+          <text class="lbl-s" x="120" y="640">ATLANTIC</text>
+          <path class="rm grass" data-room="island" d="M250 150 C 400 90, 700 80, 820 150 C 900 200, 880 330, 860 420 C 850 500, 870 560, 830 600 C 760 640, 640 620, 560 600 C 470 590, 420 560, 380 520 C 350 490, 330 480, 318 462 C 300 436, 268 420, 255 380 C 230 300, 200 200, 250 150 Z" style="stroke:var(--ink);stroke-width:3"/>
+          <path d="M270 150 C 420 104, 690 96, 800 156" stroke="var(--ink)" stroke-width="2" stroke-dasharray="2 6" fill="none"/>
+          <text class="lbl-s" x="540" y="135">sheer cliffs</text>
+          <ellipse class="rm" data-room="cove" cx="300" cy="440" rx="38" ry="26" style="fill:#efe2c0"/>
+          <text class="lbl" x="300" y="490">The Cove</text>
+          <path class="rm" data-room="yacht" d="M168 468 L232 468 L220 486 L180 486 Z"/>
+          <line x1="200" y1="468" x2="200" y2="418" stroke="var(--ink)" stroke-width="2"/><path d="M202 420 L226 462 L202 462Z" fill="var(--paper2)" stroke="var(--ink)"/>
+          <text class="lbl-s" x="200" y="508">Kestrel</text>
+          <path d="M505 290 C 520 320, 580 340, 590 382 M640 220 C 650 280, 600 330, 592 382 M590 414 C 620 480, 720 530, 790 548" stroke="#b9a988" stroke-width="10" fill="none" stroke-linecap="round"/>
+          <text class="lbl-s" x="690" y="500" transform="rotate(28 690 500)">path</text>
+          <rect class="rm" data-room="cottage" x="440" y="210" width="130" height="80"/>
+          <text class="lbl" x="505" y="248">Cottage</text><text class="lbl-s" x="505" y="268">keepers' quarters</text>
+          <circle class="rm" data-room="tower" cx="640" cy="190" r="32"/>
+          <circle cx="640" cy="190" r="12" fill="var(--brass)" pointer-events="none"/>
+          <text class="lbl" x="640" y="246">Lighthouse</text>
+          <rect class="rm" data-room="hide" x="562" y="382" width="56" height="32"/>
+          <text class="lbl-s" x="540" y="402" style="text-anchor:end">bird hide</text>
+          <rect class="rm" data-room="landing" x="770" y="545" width="70" height="45"/>
+          <path d="M778 556 h54 M778 566 h54 M778 576 h54" stroke="var(--muted)" pointer-events="none"/>
+          <text class="lbl" x="880" y="620">Landing</text>
+          <text class="lbl-s" x="520" y="632">Gull Point</text>
+          <g transform="translate(70 90)"><path d="M0 -32 L10 8 L0 0 L-10 8Z" fill="var(--ink)"/><text class="lbl" x="0" y="-38">N</text></g>
+          <g transform="translate(840 670)"><line x1="0" y1="0" x2="100" y2="0" stroke="var(--ink)" stroke-width="4"/><text class="lbl-s" x="50" y="-8" style="font-size:12px">100 yards</text></g>
+          <g id="tracks"></g>
+        </svg>
+        <aside class="room-info" id="room-info"><p class="aside">Tap any place on the plan to read the notes on it.</p></aside>
+      </div>
+    </section>
+    <section id="suspects"></section>
+    <section id="evidence"></section>
+    <section id="notes">
+      <h2>Detectives' notebook</h2>
+      <p class="aside">Kept on this device only. Scribble freely.</p>
+      <textarea id="notebook" placeholder="Times, lies, who could see whom…" aria-label="Notebook"></textarea>
+    </section>
+    <section id="solve"></section>
+  </main>
+</div>
+<footer>A sample case, and a work of fiction. The main event is <a href="index.html" style="color:inherit">The Harrowgate Hall Affair</a>.</footer>
+
+<dialog id="reader"><div class="sheet"><button class="x" aria-label="Close" onclick="this.closest('dialog').close()">×</button><div id="reader-body"></div></div></dialog>
+
+<script src="example-data.js"></script>
+<script src="engine.js"></script>
+</body>
+</html>
