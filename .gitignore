@@ -1,1 +1,4 @@
 src/
+_*.html
+cases/d-zztest.js
+img/d-zztest/

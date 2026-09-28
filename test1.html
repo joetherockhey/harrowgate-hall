@@ -1,0 +1,148 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Harrowgate Hall Affair</title>
+<meta name="description" content="A three-stage murder mystery for two detectives. New Year's Eve, 1930. A clockmaker is dead, and every clock is lying.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,800;1,600&family=Crimson+Pro:ital,wght@0,400;0,600;1,400&family=Special+Elite&family=Caveat:wght@500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div id="cover">
+  <div class="folder">
+    <span class="conf">Confidential</span>
+    <h1>The Harrowgate Hall Affair</h1>
+    <p>North Riding Constabulary · New Year's Eve, 1930.<br>A clockmaker is dead, and the clocks in his workshop disagree about when he died.</p>
+    <p style="font-size:16px">For two detectives · three stages · about half an hour</p>
+    <button class="btn" id="open-file">Break the seal</button>
+  </div>
+</div>
+
+<div class="wrap">
+  <header>
+    <div class="eyebrow">North Riding Constabulary · Case file 1931/001</div>
+    <h1>The Harrowgate Hall <i>Affair</i></h1>
+    <div class="meta">
+      <span class="pips" id="pips" aria-label="Progress"></span>
+      <span id="stage-label"></span>
+      <span id="clock">⏱ 00:00</span>
+      <button class="linkish" id="reset">Start over</button>
+    </div>
+    <nav role="tablist" id="tabs">
+      <button role="tab" data-tab="brief">Briefing</button>
+      <button role="tab" data-tab="map">Map</button>
+      <button role="tab" data-tab="suspects">Suspects</button>
+      <button role="tab" data-tab="evidence">Evidence</button>
+      <button role="tab" data-tab="notes">Notebook</button>
+      <button role="tab" data-tab="solve">Solve</button>
+    </nav>
+  </header>
+  <main>
+    <section id="brief"></section>
+    <section id="map">
+      <figure class="aerial"><img src="img/aerial-harrowgate.jpg" alt="Harrowgate Hall from the air, under snow" loading="lazy">
+        <figcaption>Harrowgate Hall from the air. For the look of the place only: go by the plan below.</figcaption></figure>
+      <div class="map-wrap">
+        <svg class="map" viewBox="0 0 1000 820" role="img" aria-label="Plan of Harrowgate Hall and grounds">
+          <defs>
+            <pattern id="snowpat" width="14" height="14" patternUnits="userSpaceOnUse"><rect width="14" height="14" fill="#f6f8fa"/><circle cx="3" cy="4" r="1" fill="#c9d3dc"/><circle cx="10" cy="10" r=".8" fill="#c9d3dc"/></pattern>
+            <pattern id="grasspat" width="16" height="16" patternUnits="userSpaceOnUse"><rect width="16" height="16" fill="#eef1e4"/><path d="M3 12 l2-4 m4 6 l2-4" stroke="#b9c3a0" stroke-width="1"/></pattern>
+          </defs>
+          <!-- grounds -->
+          <rect class="rm grass" data-room="garden" x="500" y="605" width="490" height="205"/>
+          <text class="lbl-s" x="620" y="790">GARDEN</text>
+          <path d="M700 606 L 780 704 M740 606 L 818 704" stroke="#8a9a6a" stroke-width="9" stroke-linecap="round" fill="none" opacity=".6"/>
+          <text class="lbl-s" x="700" y="668" transform="rotate(50 700 668)">yew walk</text>
+          <circle class="rm" data-room="gazebo" cx="800" cy="730" r="26"/>
+          <text class="lbl" x="800" y="776">Gazebo</text>
+          <path d="M445 604 C 440 680, 300 720, 120 810" stroke="#b9a988" stroke-width="18" fill="none"/>
+          <text class="lbl-s" x="250" y="760" transform="rotate(-22 250 760)">carriage drive to Thornby (snowed in)</text>
+          <text class="lbl-s" x="75" y="540">west lawn</text>
+          <!-- courtyard and workshop -->
+          <rect class="rm snow" data-room="courtyard" x="150" y="150" width="700" height="150"/>
+          <text class="lbl-s" x="330" y="200">COURTYARD</text>
+          <text class="lbl-s" x="330" y="218">(fresh snow)</text>
+          <path d="M150 300 V150 H420 M600 150 H850 V300" stroke="var(--ink)" stroke-width="7" fill="none"/>
+          <rect class="rm" data-room="workshop" x="420" y="40" width="180" height="110"/>
+          <rect x="490" y="18" width="40" height="22" fill="#fffdf6" stroke="var(--ink)" stroke-width="2.5"/>
+          <circle cx="510" cy="29" r="7" fill="none" stroke="var(--ink)" stroke-width="1.5"/>
+          <text class="lbl" x="510" y="92">Workshop</text>
+          <text class="lbl-s" x="510" y="112">old coach house</text>
+          <line class="door" x1="500" y1="150" x2="522" y2="150"/>
+          <rect x="168" y="258" width="44" height="28" fill="#555" opacity=".35"/><text class="lbl-s" x="190" y="252">coal</text>
+          <!-- house -->
+          <rect class="rm" data-room="kitchen" x="150" y="300" width="180" height="100"/>
+          <text class="lbl" x="240" y="356">Kitchen</text>
+          <rect class="rm" data-room="passage" x="330" y="300" width="440" height="36"/>
+          <text class="lbl-s" x="490" y="323" style="font-size:12px">servants' passage</text>
+          <text class="lbl-s" x="385" y="323" style="font-size:11px">cellar ↓</text>
+          <rect class="rm" data-room="bootroom" x="770" y="300" width="80" height="140"/>
+          <text class="lbl" x="810" y="368" style="font-size:15px">Boot</text><text class="lbl" x="810" y="386" style="font-size:15px">Room</text>
+          <rect class="rm" data-room="billiard" x="150" y="400" width="180" height="90"/>
+          <text class="lbl" x="240" y="450">Billiard Room</text>
+          <rect class="rm" data-room="library" x="150" y="490" width="180" height="90"/>
+          <text class="lbl" x="240" y="532">Library</text>
+          <text class="lbl-s" x="240" y="552" style="font-size:12px">study above (1st floor)</text>
+          <rect class="rm" data-room="hall" x="330" y="336" width="230" height="244"/>
+          <text class="lbl" x="445" y="450">Great Hall</text>
+          <text class="lbl-s" x="445" y="470">main stair · the Perpetual</text>
+          <rect class="rm" data-room="stairs" x="560" y="336" width="50" height="104"/>
+          <text class="lbl-s" x="585" y="392" transform="rotate(-90 585 392)" style="font-size:12px">back stairs</text>
+          <rect class="rm" data-room="music" x="610" y="336" width="160" height="104"/>
+          <text class="lbl" x="690" y="392">Music Room</text>
+          <rect class="rm" data-room="drawing" x="560" y="440" width="290" height="140"/>
+          <text class="lbl" x="705" y="515">Drawing Room</text>
+          <rect class="rm glass" data-room="conservatory" x="850" y="440" width="110" height="140"/>
+          <text class="lbl" x="905" y="506" style="font-size:14px">Conser-</text><text class="lbl" x="905" y="523" style="font-size:14px">vatory</text>
+          <rect class="rm" data-room="porch" x="410" y="580" width="70" height="24"/>
+          <text class="lbl-s" x="445" y="597" style="font-size:11px">porch</text>
+          <!-- doors (gaps in walls) -->
+          <line class="door" x1="229" y1="300" x2="251" y2="300"/><text class="xdoor" x="240" y="292">KITCHEN DOOR</text>
+          <line class="door" x1="799" y1="300" x2="821" y2="300"/><text class="xdoor" x="810" y="292">BOOT RM DOOR</text>
+          <line class="door" x1="330" y1="308" x2="330" y2="328"/>
+          <line class="door" x1="770" y1="308" x2="770" y2="328"/>
+          <line class="door" x1="434" y1="336" x2="456" y2="336"/>
+          <line class="door" x1="575" y1="336" x2="595" y2="336"/>
+          <line class="door" x1="680" y1="336" x2="700" y2="336"/>
+          <line class="door" x1="670" y1="440" x2="710" y2="440"/>
+          <line class="door" x1="330" y1="435" x2="330" y2="455"/>
+          <line class="door" x1="330" y1="525" x2="330" y2="545"/>
+          <line class="door" x1="560" y1="505" x2="560" y2="530"/>
+          <line class="door" x1="850" y1="495" x2="850" y2="525"/>
+          <line class="door" x1="894" y1="580" x2="916" y2="580"/><text class="xdoor" x="930" y="598">GARDEN DOOR</text>
+          <line class="door" x1="434" y1="580" x2="456" y2="580"/>
+          <line x1="640" y1="580" x2="780" y2="580" stroke="#8fb3c9" stroke-width="6"/><text class="xdoor" x="710" y="598" style="fill:#4d7590">SOUTH WINDOW</text>
+          <line x1="150" y1="520" x2="150" y2="550" stroke="#8fb3c9" stroke-width="6"/>
+          <!-- furniture hints -->
+          <rect x="690" y="352" width="56" height="30" rx="4" fill="none" stroke="var(--muted)" stroke-width="1.5"/><text class="lbl-s" x="718" y="372" style="font-size:10px">Duo-Art</text>
+          <!-- compass & scale -->
+          <g transform="translate(60 70)"><path d="M0 -32 L10 8 L0 0 L-10 8Z" fill="var(--ink)"/><text class="lbl" x="0" y="-38">N</text></g>
+          <g transform="translate(40 790)"><line x1="0" y1="0" x2="67" y2="0" stroke="var(--ink)" stroke-width="4"/><text class="lbl-s" x="34" y="-8" style="font-size:12px">20 yards</text></g>
+          <g id="tracks"></g>
+        </svg>
+        <aside class="room-info" id="room-info"><p class="aside">Tap any place on the plan to read the notes on it.</p></aside>
+      </div>
+    </section>
+    <section id="suspects"></section>
+    <section id="evidence"></section>
+    <section id="notes">
+      <h2>Detectives' notebook</h2>
+      <p class="aside">Kept on this device only. Scribble freely.</p>
+      <textarea id="notebook" placeholder="Times, lies, who could see whom…" aria-label="Notebook"></textarea>
+    </section>
+    <section id="solve"></section>
+  </main>
+</div>
+<footer>A work of fiction. Any resemblance to real clockmakers, living or dead, is coincidental.</footer>
+
+<dialog id="reader"><div class="sheet"><button class="x" aria-label="Close" onclick="this.closest('dialog').close()">×</button><div id="reader-body"></div></div></dialog>
+
+<script src="data.js"></script>
+<script src="days.js"></script>
+<script src="engine.js"></script>
+</body>
+</html>
