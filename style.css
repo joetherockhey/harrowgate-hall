@@ -80,7 +80,7 @@ img.mono{width:84px;height:84px;object-fit:cover;object-position:50% 30%}
 .k-statement{color:var(--blue)} .k-report{color:var(--red)} .k-document,.k-mirror{color:#5b4a2a} .k-telegram{color:#9a6a12}
 .ev b{display:block;font:600 19px/1.25 "Playfair Display",serif;margin:.3em 0 .2em}
 .ev small{display:block;color:var(--muted);font-size:15px;line-height:1.35}
-.new{position:absolute;top:10px;right:10px;background:var(--red);color:#fff;font:11px "Special Elite",monospace;padding:2px 6px;letter-spacing:.1em}
+.new{position:absolute;top:10px;right:62px;background:var(--red);color:#fff;font:11px "Special Elite",monospace;padding:2px 6px;letter-spacing:.1em}
 
 /* map */
 .map-wrap{display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:22px;align-items:start}
@@ -206,7 +206,6 @@ footer{color:#7d6d58;text-align:center;font:13px "Special Elite",monospace;paddi
 .photo img{display:block;width:100%;height:auto;filter:sepia(.15)}
 .photo figcaption{font:italic 15px/1.35 "Crimson Pro",serif;color:var(--muted);margin-top:6px}
 .photo.tilt{transform:rotate(-1deg)}
-.k-puzzle{color:#3d5a3a}
 
 /* mini-puzzles */
 .pz{margin:18px 0 8px;padding:16px;background:#fffaf0;border:2px dashed var(--muted)}
@@ -262,3 +261,10 @@ button.corner{cursor:pointer}
 .staff .st-l{stroke-width:1.2}.staff .st-s{stroke-width:1.6}
 .staff text{font:15px "Special Elite",monospace;stroke:none;fill:#8a2d1f}
 
+
+/* corner badge on evidence cards */
+.ev{padding-right:64px}
+.ev-ico{position:absolute;top:10px;right:10px;width:42px;height:42px}
+svg.ev-ico{fill:none;stroke:currentColor;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round;padding:8px;box-sizing:border-box;border-radius:50%;background:#f3e9d2}
+.ev-face{border-radius:50%;object-fit:cover;object-position:50% 30%;border:2px solid #b08d57;box-shadow:0 1px 3px #0003}
+.k-puzzle{color:#3d5a3a}

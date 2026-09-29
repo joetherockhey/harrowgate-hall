@@ -79,12 +79,25 @@ function renderSuspects() {
     }).join('') + '</div>';
 }
 
+// Corner badge on evidence cards: the speaker's photo on a suspect's statement, otherwise an icon for the kind.
+const ICON = {
+  puzzle: 'M19.44 7.85c-.05.32.06.65.29.88l1.57 1.57a2.4 2.4 0 0 1 0 3.4l-1.61 1.62a.98.98 0 0 1-.84.27c-.47-.07-.8-.48-.97-.92a2.5 2.5 0 1 0-3.21 3.21c.45.17.86.5.93.97a.98.98 0 0 1-.28.84l-1.61 1.6a2.4 2.4 0 0 1-3.4 0l-1.57-1.56a1.03 1.03 0 0 0-.88-.29c-.49.07-.84.5-1.02.97a2.5 2.5 0 1 1-3.24-3.24c.47-.18.9-.53.97-1.02a1.03 1.03 0 0 0-.29-.88L2.7 13.7a2.4 2.4 0 0 1 0-3.4l1.53-1.53c.24-.24.58-.35.92-.3.51.08.88.53 1.07 1.01a2.5 2.5 0 1 0 3.26-3.26c-.48-.2-.93-.56-1.01-1.07-.05-.34.06-.68.3-.92L10.3 2.7a2.4 2.4 0 0 1 3.4 0l1.57 1.57c.23.23.56.34.88.29.49-.07.84-.5 1.02-.97a2.5 2.5 0 1 1 3.24 3.24c-.47.18-.9.53-.97 1.02Z',
+  document: 'M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7ZM14 2v4a2 2 0 0 0 2 2h4M10 9H8M16 13H8M16 17H8',
+  report: 'M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2M9 2h6a1 1 0 0 1 1 1v2a1 1 0 0 1-1 1H9a1 1 0 0 1-1-1V3a1 1 0 0 1 1-1zM9 12h6M9 16h6',
+  telegram: 'M4 4h16a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2zM22 7l-10 6L2 7',
+  mirror: 'M11 3a8 8 0 1 0 0 16 8 8 0 0 0 0-16zM21 21l-4.3-4.3',
+  statement: 'M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2M12 3a4 4 0 1 0 0 8 4 4 0 0 0 0-8z',
+};
+const badge = e => e.kind === 'statement' && SUSPECTS.some(p => p.id === e.who)
+  ? `<img class="ev-ico ev-face" src="${CASE.imgdir || 'img/'}${e.who}.jpg" alt="" loading="lazy">`
+  : ICON[e.kind] ? `<svg class="ev-ico k-${e.kind}" viewBox="0 0 24 24" aria-hidden="true"><path d="${ICON[e.kind]}"/></svg>` : '';
 function renderEvidence() {
   $('#evidence').innerHTML = S.map((s, i) => `
     <div class="stage-h"><h3>Stage ${ROMAN[i]}</h3><span>${s.evidence.length} items</span></div>
     <div class="cards">${s.evidence.map(e => `
       <button class="ev" data-ev="${e.id}">
         ${st.read[e.id] ? '' : '<span class="new">NEW</span>'}
+        ${badge(e)}
         <span class="kind k-${e.kind}">${e.kind === 'mirror' ? 'exhibit' : e.kind}${e.kind === 'puzzle' && st.puzzles[e.id] ? ' · solved' : ''}</span>
         <b>${e.title}</b><small>${e.sub || ''}</small>
       </button>`).join('')}</div>`).join('')
