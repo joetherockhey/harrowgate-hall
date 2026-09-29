@@ -274,7 +274,7 @@ const PZ = {
   async jigsaw(d, box, done, solved, id) {
     const n = d.grid || 3, c = document.createElement('canvas'), g = c.getContext('2d');
     if (d.img) {
-      const im = new Image(); im.src = d.img; await im.decode();
+      const im = new Image(); await new Promise((ok, bad) => { im.onload = ok; im.onerror = bad; im.src = d.img; });
       c.width = im.naturalWidth; c.height = Math.round(im.naturalHeight * (d.crop || 1));
       g.drawImage(im, 0, 0, c.width, c.height, 0, 0, c.width, c.height);
     } else {
