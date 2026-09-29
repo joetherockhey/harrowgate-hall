@@ -320,6 +320,25 @@ const PZ = {
     };
   },
 
+  // data: { key: { E4: 'M', ... }, lines: ['E4 G4 B4', 'E4 C5 | F4 G5 C5'], text: 'MIDNIGHT MY KEY' }.
+  // Notes on a treble staff, C4 (ledger below) to A5 (ledger above); | is a bar line between words. Translate with the key, type the message.
+  staff(d, box, done, solved) {
+    const P = ['C4', 'D4', 'E4', 'F4', 'G4', 'A4', 'B4', 'C5', 'D5', 'E5', 'F5', 'G5', 'A5'], gap = 12, top = 34, w = 44;
+    const y = n => top + 4 * gap - (P.indexOf(n) - 2) * gap / 2;          // E4 sits on the bottom line
+    const note = (n, x, label) => { const k = P.indexOf(n), yy = y(n), up = k < 6;
+      return (k === 0 || k === 12 ? `<line x1="${x - 13}" x2="${x + 13}" y1="${yy}" y2="${yy}" class="st-l"/>` : '')
+        + `<ellipse cx="${x}" cy="${yy}" rx="7.5" ry="5.5" transform="rotate(-20 ${x} ${yy})"/>`
+        + `<line x1="${up ? x + 6.5 : x - 6.5}" x2="${up ? x + 6.5 : x - 6.5}" y1="${yy}" y2="${up ? yy - 34 : yy + 34}" class="st-s"/>`
+        + (label ? `<text x="${x}" y="${top + 4 * gap + 44}" text-anchor="middle">${label}</text>` : ''); };
+    const staffSvg = (items, cls) => { const W = 30 + items.length * w;
+      return `<svg class="staff ${cls}" style="width:${W}px" viewBox="0 0 ${W} ${top + 4 * gap + 56}">${[0, 1, 2, 3, 4].map(i => `<line x1="4" x2="${W - 4}" y1="${top + i * gap}" y2="${top + i * gap}" class="st-l"/>`).join('')}
+        ${items.map((it, i) => it.bar ? `<line x1="${30 + i * w}" x2="${30 + i * w}" y1="${top}" y2="${top + 4 * gap}" class="st-l"/>` : note(it.n, 30 + i * w, it.label)).join('')}</svg>`; };
+    box.insertAdjacentHTML('beforeend', `<p class="aside">The key:</p>${[P.slice(0, 7), P.slice(7)].map(r => staffSvg(r.map(n => ({ n, label: d.key[n] })), 'st-msg')).join('')}
+      <p class="aside" style="margin-top:14px">The message:</p>${d.lines.map(l => staffSvg(l.split(' ').map(t => t === '|' ? { bar: 1 } : { n: t, label: solved ? d.key[t] : '' }), 'st-msg')).join('')}
+      ${solved ? `<p class="morse-plain">${d.text}</p>` : ''}`);
+    if (!solved) answerRow(box, v => norm(v) === norm(d.text), () => { box.insertAdjacentHTML('beforeend', `<p class="morse-plain">${d.text}</p>`); done(); });
+  },
+
   // data: { text: 'PLAIN TEXT', shift: 3 }. Shown shifted; turn the wheel until it reads.
   cipher(d, box, done, solved) {
     const enc = caesar(d.text.toUpperCase(), d.shift);

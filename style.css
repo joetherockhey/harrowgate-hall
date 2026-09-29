@@ -243,3 +243,7 @@ a.day:hover{border-color:var(--ink)}
 .day.test .dow{color:var(--muted)}
 .btn.ghost-l{background:none;color:var(--paper);border:1px solid var(--brass)}
 button.corner{cursor:pointer}
+.staff{display:block;max-width:100%;height:auto;background:#fbf3df;border:1px solid #cfb567;margin:0 0 8px;fill:#1e2f55;stroke:#1e2f55}
+.staff .st-l{stroke-width:1.2}.staff .st-s{stroke-width:1.6}
+.staff text{font:15px "Special Elite",monospace;stroke:none;fill:#8a2d1f}
+
