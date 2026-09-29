@@ -117,7 +117,7 @@ dialog::backdrop{background:#0b0906cc;backdrop-filter:blur(2px)}
   background-image:repeating-linear-gradient(#0000 0 31px,#b9a88410 31px 32px)}
 .sheet .x{position:sticky;float:right;top:0;border:0;background:var(--ink);color:var(--paper);width:36px;height:36px;border-radius:50%;font-size:20px;line-height:1;z-index:2}
 .sheet .kind{font:13px "Special Elite",monospace;letter-spacing:.14em;text-transform:uppercase}
-.sheet .who{font:15px "Special Elite",monospace;color:var(--muted);margin-bottom:1em}
+.sheet .who{font:15px "Special Elite",monospace;color:var(--muted);margin-bottom:1em;display:flex;align-items:center;gap:12px}
 .sheet h2{margin-top:.2em}
 .aside{color:var(--muted);font-style:italic;font-size:17px}
 .hand,.hand-inline{font-family:"Caveat",cursive;font-size:25px;line-height:1.35;color:#1e2f55}

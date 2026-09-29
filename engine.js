@@ -149,7 +149,8 @@ $('#tabs').onclick = e => { const b = e.target.closest('button'); if (b) showTab
 
 function openEvidence(id) {
   const e = evidence().find(x => x.id === id); if (!e) return;
-  const who = e.who ? (SUSPECTS.some(p => p.id === e.who) ? nameOf(e.who) : e.who) : '';
+  const sus = SUSPECTS.some(p => p.id === e.who);
+  const who = e.who ? (sus ? `<img class="mono" src="${CASE.imgdir || 'img/'}${e.who}.jpg" alt="">${nameOf(e.who)}` : e.who) : '';
   $('#reader-body').innerHTML = `<div class="kind k-${e.kind}">${e.kind === 'mirror' ? 'exhibit' : e.kind} · stage ${ROMAN[e.stage - 1]}</div>
     <h2>${e.title}</h2>${who ? `<div class="who">${who}</div>` : `<div class="who">${e.sub || ''}</div>`}${e.html || ''}`;
   if (e.kind === 'puzzle') renderPuzzle(e);
