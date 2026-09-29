@@ -91,14 +91,21 @@ function renderEvidence() {
     + (SOL ? '' : `<p class="aside" style="margin-top:28px">More evidence will come in once you solve Stage ${ROMAN[solved()]}.</p>`);
 }
 
-let selRoom = null;
+let selRoom = null, showPins = false;
+// stage1.pins: { label, people: [{ id, name?, x, y }] } - photos on the plan, behind a toggle.
+const pinSvg = p => `<g class="pin" transform="translate(${p.x} ${p.y})"><clipPath id="pc-${p.id}"><circle r="25"/></clipPath>
+  <circle r="28" class="pin-ring"/><image href="${CASE.imgdir || 'img/'}${p.id}.jpg" x="-25" y="-25" width="50" height="50" clip-path="url(#pc-${p.id})" preserveAspectRatio="xMidYMin slice"/>
+  <text y="45" class="pin-n">${p.name || nameOf(p.id).split(' ')[0]}</text></g>`;
 function renderMap() {
   $('#tracks').innerHTML = S[1] ? S[1].overlay : '';
+  const P = CASE.stage1.pins, pins = $('#pins');
+  if (pins) pins.innerHTML = P && showPins ? P.people.map(pinSvg).join('') : '';
+  const btn = P ? `<button type="button" class="pins-btn" data-pins aria-pressed="${showPins}">${showPins ? 'Hide the people' : P.label}</button>` : '';
   document.querySelectorAll('.map [data-room]').forEach(r => r.classList.toggle('sel', r.dataset.room === selRoom));
   const legend = S[1] && S[1].legend ? '<div class="legend">' + S[1].legend + '</div>' : '';
-  if (!selRoom) { $('#room-info').innerHTML = `<p class="aside">Tap any place on the plan to read the notes on it.</p>${legend}`; return; }
+  if (!selRoom) { $('#room-info').innerHTML = `${btn}<p class="aside">Tap any place on the plan to read the notes on it.</p>${legend}`; return; }
   const notes = S.map(s => s.rooms && s.rooms[selRoom]).filter(Boolean);
-  $('#room-info').innerHTML = notes.map(n => `<p>${n}</p>`).join('') + legend;
+  $('#room-info').innerHTML = btn + notes.map(n => `<p>${n}</p>`).join('') + legend;
 }
 
 function renderSolve() {
@@ -162,6 +169,7 @@ document.addEventListener('click', e => {
   const ev = e.target.closest('[data-ev]'); if (ev) return openEvidence(ev.dataset.ev);
   const mk = e.target.closest('[data-mark]'); if (mk) { st.marks[mk.dataset.mark] = mk.dataset.m; save(); renderSuspects(); return; }
   if (e.target.closest('.mirror-btn')) { const m = $('#reader .mirrored'); m.classList.toggle('flipped'); e.target.textContent = m.classList.contains('flipped') ? 'Put the mirror down' : 'Hold it to a mirror'; return; }
+  if (e.target.closest('[data-pins]')) { showPins = !showPins; renderMap(); return; }
   const rm = e.target.closest('.map [data-room]'); if (rm) { selRoom = rm.dataset.room; renderMap(); if (innerWidth < 820) $('#room-info').scrollIntoView({ behavior: 'smooth', block: 'nearest' }); return; }
   if (e.target.id === 'hint') { st.hints[solved()]++; save(); renderSolve(); return; }
   if (e.target.closest('[data-cal]')) return openCalendar();
