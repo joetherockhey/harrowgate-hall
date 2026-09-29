@@ -1,5 +1,6 @@
 // One case per day. Add a line here and a cases/<id>.js file to publish a new day.
 window.SITE = 'The Daily Corpse';
+window.PREVIEW = true;   // opens every day early; set to false to lock future days again
 window.DAYS = [
   { date: '2026-09-28', id: 'd-sleeper',  title: 'The Simplon Sleeper',       tagline: 'Alpine express, 1927. A torn letter in the dining car.' },
   { date: '2026-09-29', id: 'd-bluenote', title: 'Last Set at the Blue Lamp', tagline: 'Soho jazz cellar, 1962. A setlist in code.' },

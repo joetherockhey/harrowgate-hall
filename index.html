@@ -56,8 +56,8 @@
 { // block scope: engine.js declares its own globals (load, $ ...)
   const iso = d => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
   const q = new URLSearchParams(location.search), today = iso(new Date());
-  const open = DAYS.filter(d => q.has('all') || d.date <= today);
-  window.DAY = open.find(d => d.date === q.get('d')) || open[open.length - 1] || DAYS[0];
+  const open = DAYS.filter(d => window.PREVIEW || q.has('all') || d.date <= today);
+  window.DAY = open.find(d => d.date === q.get('d')) || open.filter(d => d.date <= today).pop() || open[0] || DAYS[0];
   const load = src => new Promise((ok, bad) => { const s = document.createElement('script'); s.src = src; s.onload = ok; s.onerror = bad; document.body.append(s); });
   load(`cases/${DAY.id}.js`).then(() => load('engine.js'));
 }

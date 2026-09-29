@@ -1,7 +1,7 @@
 const $ = s => document.querySelector(s);
 const KEY = CASE.id + '-v1';
 const load = () => { try { return JSON.parse(localStorage.getItem(KEY)) || {}; } catch { return {}; } };
-let st = Object.assign({ answers: [], wrong: [0,0,0], hints: [0,0,0], read: {}, marks: {}, puzzles: {}, notes: '', start: 0, end: 0, opened: false }, load());
+let st = Object.assign({ answers: [], wrong: [0,0,0], hints: [0,0,0], read: {}, marks: {}, puzzles: {}, pz: {}, notes: '', start: 0, end: 0, opened: false }, load());
 const save = () => { try { localStorage.setItem(KEY, JSON.stringify(st)); } catch {} };
 
 const S = [CASE.stage1];           // unlocked stages
@@ -56,7 +56,8 @@ function renderBrief() {
   const latest = S.length > 1 ? S[S.length - 1] : null;
   $('#brief').innerHTML = (SOL ? `<div class="memo"><div class="eyebrow">Case closed</div><p>You've solved it. The full account is on the <b>Solve</b> tab.</p></div>` :
     latest ? `<div class="memo"><div class="eyebrow">Latest from ${CASE.stage1.officer || 'Constable Barnes'} · Stage ${ROMAN[S.length - 1]}</div>${latest.intro}</div>` : '')
-    + CASE.stage1.briefing;
+    + CASE.stage1.briefing
+    + (SOL ? '' : `<p class="aside" style="margin-top:24px"><b>How it works:</b> the case comes in three stages. Each time you answer a stage correctly on the <b>Solve</b> tab, more evidence is revealed: new statements, exhibits and clues on the map.</p>`);
 }
 
 function renderSuspects() {
@@ -262,7 +263,7 @@ const PZ = {
       g.fillStyle = '#1e2f55'; g.font = '44px Caveat'; lines.forEach((l, i) => g.fillText(l, 50, 96 + i * 62));
     }
     const src = c.toDataURL('image/jpeg', .9), pos = (i, n) => (i / (n - 1)) * 100;
-    let order = solved ? [...Array(n * n).keys()] : seeded([...Array(n * n).keys()], id), sel = null;
+    let order = st.pz[id] || (solved ? [...Array(n * n).keys()] : seeded([...Array(n * n).keys()], id)), sel = null;
     box.insertAdjacentHTML('beforeend', `<p class="aside">${solved ? 'Pieced together.' : 'Tap two pieces to swap them.'}</p><div class="jig" style="aspect-ratio:${c.width}/${c.height};grid-template-columns:repeat(${n},1fr)"></div>`);
     const grid = box.querySelector('.jig');
     const draw = () => grid.innerHTML = order.map((p, i) => `<button type="button" data-i="${i}" aria-label="Piece ${i + 1}" class="${sel === i ? 'sel' : ''}"
@@ -272,7 +273,7 @@ const PZ = {
     grid.onclick = ev => {
       const b = ev.target.closest('[data-i]'); if (!b) return;
       const i = +b.dataset.i;
-      if (sel === null) sel = i; else { [order[sel], order[i]] = [order[i], order[sel]]; sel = null; }
+      if (sel === null) sel = i; else { [order[sel], order[i]] = [order[i], order[sel]]; sel = null; st.pz[id] = order; save(); }
       draw();
       if (order.every((p, i) => p === i)) { grid.onclick = null; grid.classList.add('whole'); done(); }
     };
@@ -368,7 +369,7 @@ const PZ = {
 const isoDay = d => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
 const solvedCase = id => { try { return (JSON.parse(localStorage.getItem(id + '-v1')) || {}).answers?.length === 3; } catch { return false; } };
 function openCalendar() {
-  const today = isoDay(new Date()), preview = /[?&]all\b/.test(location.search);
+  const today = isoDay(new Date()), preview = window.PREVIEW || /[?&]all\b/.test(location.search);
   const days = DAYS.map(d => {
     const open = preview || d.date <= today, dt = new Date(d.date + 'T12:00');
     return `<${open ? `a href="index.html?d=${d.date}${preview ? '&all' : ''}"` : 'div aria-disabled="true"'} class="day ${open ? '' : 'locked'} ${d.id === CASE.id ? 'cur' : ''}">
@@ -385,8 +386,10 @@ function openCalendar() {
 }
 async function share() {
   const face = i => st.wrong[i] ? '🟥' : st.hints[i] ? '🟨' : '🟩';
-  const name = M ? M.title : document.title, when = window.DAY ? ' · ' + dayLabel(DAY.date) : '';
-  const text = `${window.SITE ? SITE + ': ' : ''}${name}${when}\n${[0, 1, 2].map(face).join('')} ⏱ ${fmt(st.end - st.start)}\n${location.href.split('#')[0]}`;
+  const name = M ? M.title : document.title, n = (a, w) => `${a} ${w}${a === 1 ? '' : 's'}`;
+  const hints = st.hints.reduce((a, b) => a + b, 0), wrong = st.wrong.reduce((a, b) => a + b, 0);
+  const head = window.DAY ? `${SITE} #${DAYS.indexOf(DAY) + 1} — ${new Date(DAY.date + 'T12:00').toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'short' })}\n` : '';
+  const text = `${head}${name}\n${[0, 1, 2].map(face).join('')}\n⏱ ${fmt(st.end - st.start)} · 🔍 ${n(hints, 'hint')} · ❌ ${n(wrong, 'wrong accusation')}`;
   try { if (navigator.share) await navigator.share({ text }); else { await navigator.clipboard.writeText(text); toast('Result copied. Paste it to your fellow detective.'); } }
   catch {}
 }
