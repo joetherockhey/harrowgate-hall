@@ -29,7 +29,7 @@
 
   <div class="land-cta">
     <a class="btn" id="go" href="case.html?c=d-warmup">Start the warm-up</a>
-    <a class="btn ghost-l" id="board" href="board.html">Go to the case board</a>
+    <a class="btn ghost-l" id="board" href="board.html">See the case board</a>
   </div>
 
   <div class="land-files" aria-hidden="true" id="files"></div>
@@ -41,12 +41,9 @@
 <script>
 {
   const $ = s => document.querySelector(s);
-  const pic = v => v.photo || `img/${v.id}/${v.pic || 'plan'}.jpg`, link = v => v.href || `case.html?c=${v.id}`;
-  // A returning detective carries on from the first open case they haven't solved.
+  const pic = v => v.photo || `img/${v.id}/${v.pic || 'plan'}.jpg`;
   const started = [WARMUP, ...LEVELS].some(v => caseSave(v.id).answers?.length);
-  const i = LEVELS.findIndex((v, i) => levelOpen(i) && !solvedCase(v.id));
-  if (started && i >= 0) { $('#go').textContent = `Carry on with Case ${i + 1}`; $('#go').href = link(LEVELS[i]); $('#board').textContent = 'Case board'; }
-  else if (started) { $('#go').textContent = 'Open the case board'; $('#go').href = 'board.html'; $('#board').hidden = true; }
+  if (started) $('#go').hidden = true;   // returning detectives just go to the board
   $('#files').innerHTML = LEVELS.slice(0, 3).map((v, n) => `<span class="pol" style="--r:${[-5, 2, 6][n]}deg"><span class="pol-pic"><img src="${pic(v)}" alt="" width="140" height="104" loading="lazy"></span><span class="pol-cap">${n + 1}. ${v.title}</span></span>`).join('');
   $('#count').textContent = `${LEVELS.length} cases on the board so far, with more to come.`;
 }

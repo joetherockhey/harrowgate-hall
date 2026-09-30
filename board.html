@@ -57,6 +57,26 @@
       ${i === cur ? `<span class="tag" style="left:${x}%;top:${y + 196}px">${caseSave(v.id).answers?.length ? 'Carry on' : 'Open the file'}</span>` : ''}`;
   }).join('');
 
+  // Desk clutter in the gap beside each polaroid, so the board isn't bare between cases. Decoration only, no clues.
+  const P = n => `<img src="img/props/${n}.webp" alt="" loading="lazy">`;
+  const clutter = [
+    ['prop', 118, P('mug')],
+    ['note', 150, '<b>Means, motive, opportunity.</b> Who had all three?'],
+    ['prop', 136, P('glasses')],
+    ['ticket', 160, '<b>Simplon-Orient Express</b><span>1st class · Lausanne → Milano</span><i>No. 06</i>'],
+    ['prop', 104, P('magnifier')],
+    ['sticky', 110, 'Ring the Yard before nine!'],
+    ['match', 92, '<b>The Blue Lamp</b><span>Soho · W.1</span>'],
+    ['prop', 108, P('watch')],
+    ['doodle', 140, 'Who lied first?<svg viewBox="0 0 120 60" aria-hidden="true"><path d="M8 40c10-22 30-26 40-10s-6 24-14 12M60 30h40m-9-8 9 8-9 8"/><circle cx="104" cy="30" r="13"/></svg>'],
+    ['prop', 72, P('key')],
+  ];
+  const deco = nodes.map((_, i) => {
+    const { x, y } = pos(i), [kind, w, html] = clutter[i % clutter.length], left = x < 50 ? 76 : 24, tilt = [-8, 6, -4, 10, -12, 5, -6, 8, -3, 12][i % 10];
+    return `<div class="deco ${kind}" style="left:${left}%;top:${y + 34}px;width:${w}px;--t:${tilt}deg" aria-hidden="true">${html}</div>`;
+  }).join('') + [[18, 0.12], [82, 0.33], [30, 0.55], [70, 0.78], [22, 0.9]].map(([l, f]) => `<div class="ring" style="left:${l}%;top:${f * H}px" aria-hidden="true"></div>`).join('');
+  board.insertAdjacentHTML('afterbegin', deco);
+
   // Red string from pin to pin: solid as far as you've got, faded beyond.
   const W = board.clientWidth, pts = nodes.map((_, i) => { const p = pos(i); return [p.x / 100 * W, p.y + 2]; });
   const seg = (a, b) => `M${a[0]},${a[1]} Q${(a[0] + b[0]) / 2},${(a[1] + b[1]) / 2 + 30} ${b[0]},${b[1]}`;

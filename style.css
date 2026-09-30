@@ -360,3 +360,25 @@ dialog,.sheet{overscroll-behavior:contain}
 .land-files .pol-cap{font-size:16px}
 .land-count{font:15px "Special Elite",monospace;color:#e6d3a8}
 .board-intro a{color:#a8201a}
+
+/* ---------- desk clutter on the case board ---------- */
+.board{max-width:720px}
+.board .string{z-index:1} .lamp{z-index:1} .pol{z-index:2} .tag{z-index:3}
+.deco{position:absolute;z-index:0;transform:translate(-50%,0) rotate(var(--t,0deg));pointer-events:none}
+.deco.prop img{display:block;width:100%;height:auto;filter:drop-shadow(0 8px 10px rgba(0,0,0,.55))}
+.deco.note{background:#f4efe2;color:#2a2016;padding:12px 12px 14px;font:600 18px/1.15 "Caveat",cursive;box-shadow:0 6px 12px rgba(0,0,0,.45);
+  background-image:linear-gradient(#0000 23px,#c9d6e8 24px,#0000 25px);background-size:100% 22px;background-position:0 12px}
+.deco.note b{display:block;color:#a8201a;font-weight:600}
+.deco.sticky{background:#f3d86b;color:#3a2e10;padding:14px 12px;font:600 19px/1.1 "Caveat",cursive;box-shadow:0 6px 10px rgba(0,0,0,.4);aspect-ratio:1}
+.deco.ticket{background:#e9dcc0;color:#3a2a18;padding:10px 12px;font:12px/1.35 "Special Elite",monospace;box-shadow:0 5px 10px rgba(0,0,0,.45);
+  border-left:3px dashed #a88f64;display:grid;gap:2px}
+.deco.ticket b{font:600 13px "Playfair Display",serif;color:#1d3b6e} .deco.ticket i{font-style:normal;color:#a8201a}
+.deco.match{background:#1d3b6e;color:#f3e3b5;padding:14px 10px 18px;text-align:center;font:11px "Special Elite",monospace;box-shadow:0 5px 10px rgba(0,0,0,.5);
+  border-bottom:10px solid #b9a079;display:grid;gap:3px}
+.deco.match b{font:600 italic 16px "Playfair Display",serif;color:#ffd27f}
+.deco.doodle{background:#fbf8ef;color:#3b3b3b;padding:10px 12px;font:600 19px/1.1 "Caveat",cursive;box-shadow:0 5px 10px rgba(0,0,0,.4);
+  clip-path:polygon(0 4%,8% 0,20% 3%,35% 0,50% 4%,66% 1%,80% 4%,100% 0,100% 100%,0 100%)}
+.deco.doodle svg{display:block;width:100%;height:auto;margin-top:4px;fill:none;stroke:#555;stroke-width:2;stroke-linecap:round}
+.ring{position:absolute;z-index:0;width:96px;height:96px;transform:translate(-50%,-50%);border-radius:50%;pointer-events:none;
+  background:radial-gradient(circle,transparent 60%,rgba(60,32,12,.32) 62%,rgba(60,32,12,.14) 67%,transparent 71%)}
+.land-cta [hidden]{display:none}
