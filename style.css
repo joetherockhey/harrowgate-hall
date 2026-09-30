@@ -279,7 +279,7 @@ button.corner{cursor:pointer}
 /* corner badge on evidence cards */
 .ev{padding-right:64px}
 .ev-ico{position:absolute;top:10px;right:10px;width:42px;height:42px}
-svg.ev-ico{fill:none;stroke:currentColor;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round;padding:8px;box-sizing:border-box;border-radius:50%;background:#f3e9d2}
+svg.ev-ico{overflow:visible;fill:none;stroke:currentColor;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round;padding:8px;box-sizing:border-box;border-radius:50%;background:#f3e9d2}
 .ev-face{border-radius:50%;object-fit:cover;object-position:50% 30%;border:2px solid #b08d57;box-shadow:0 1px 3px #0003}
 .k-puzzle{color:#3d5a3a}
 /* On a painted plan the picture replaces the line drawing: loose shapes are hidden, while hotspots, labels and <g> groups (trails, pins, legends) stay. */
