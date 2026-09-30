@@ -41,47 +41,74 @@
   const src = v => v.photo || `img/${v.id}/${v.pic || 'plan'}.jpg`, link = v => v.href || `case.html?c=${v.id}${all}`;
   $('#tally').textContent = `${nodes.filter(v => v.done).length} of ${LEVELS.length} solved`;
   board.style.height = H + 'px';
-  const pos = i => ({ x: [28, 72, 34, 70, 26, 68, 36][i % 7], y: H - 150 - i * ROW, r: [-3, 4, -2, 3, -4, 2, -3][i % 7] });   // x in %, y in px
+  const pos = i => ({ x: [28, 72, 34, 70, 26, 68, 36][i % 7], y: H - 150 - i * ROW, r: [-3, 4, -2, 3, -4, 2, -3][i % 7] });   // x in % of the column, y in px
 
-  board.innerHTML = nodes.map((v, i) => {
+  const trail = nodes.map((v, i) => {
     const { x, y, r } = pos(i);
     if (v.soon) return `<div class="pol soon" style="left:${x}%;top:${y}px;--r:${r}deg"><span class="pol-cap">More files soon</span></div>`;
     const cls = v.done ? 'done' : v.open ? 'open' : 'locked';
     return `${i === cur ? `<div class="lamp" style="left:${x}%;top:${y + 70}px"></div>` : ''}
       <button class="pol ${cls} ${i === cur ? 'cur' : ''}" type="button" style="left:${x}%;top:${y}px;--r:${r}deg" data-i="${i}"
         aria-label="${v.warm ? 'Warm-up' : 'Case ' + v.n}: ${v.open ? v.title : 'sealed'}${v.done ? ', solved' : ''}">
-        <span class="pol-pic"><img src="${src(v)}" alt="" width="140" height="104" loading="lazy">${v.done ? '<b class="stamp">Solved</b>' : ''}${v.open ? '' : '<span class="seal" aria-hidden="true"></span>'}</span>
+        <span class="pol-pic"><img src="${src(v)}" alt="" width="144" height="144" loading="lazy">${v.done ? '<b class="stamp">Solved</b>' : ''}${v.open ? '' : '<span class="seal" aria-hidden="true"></span>'}</span>
         <span class="pol-cap">${v.warm ? 'Warm-up:' : v.n + '.'} ${v.open ? v.title : 'Sealed'}</span>
         ${v.done ? stars(caseStars(v.id)) : ''}
       </button>
-      ${i === cur ? `<span class="tag" style="left:${x}%;top:${y + 196}px">${caseSave(v.id).answers?.length ? 'Carry on' : 'Open the file'}</span>` : ''}`;
+      ${i === cur ? `<span class="tag" style="left:${x}%;top:${y + 214}px">${caseSave(v.id).answers?.length ? 'Carry on' : 'Open the file'}</span>` : ''}`;
   }).join('');
-
-  // Desk clutter in the gap beside each polaroid, so the board isn't bare between cases. Decoration only, no clues.
-  const P = n => `<img src="img/props/${n}.webp" alt="" loading="lazy">`;
-  const clutter = [
-    ['prop', 118, P('mug')],
-    ['note', 150, '<b>Means, motive, opportunity.</b> Who had all three?'],
-    ['prop', 136, P('glasses')],
-    ['ticket', 160, '<b>Simplon-Orient Express</b><span>1st class · Lausanne → Milano</span><i>No. 06</i>'],
-    ['prop', 104, P('magnifier')],
-    ['sticky', 110, 'Ring the Yard before nine!'],
-    ['match', 92, '<b>The Blue Lamp</b><span>Soho · W.1</span>'],
-    ['prop', 108, P('watch')],
-    ['doodle', 140, 'Who lied first?<svg viewBox="0 0 120 60" aria-hidden="true"><path d="M8 40c10-22 30-26 40-10s-6 24-14 12M60 30h40m-9-8 9 8-9 8"/><circle cx="104" cy="30" r="13"/></svg>'],
-    ['prop', 72, P('key')],
-  ];
-  const deco = nodes.map((_, i) => {
-    const { x, y } = pos(i), [kind, w, html] = clutter[i % clutter.length], left = x < 50 ? 76 : 24, tilt = [-8, 6, -4, 10, -12, 5, -6, 8, -3, 12][i % 10];
-    return `<div class="deco ${kind}" style="left:${left}%;top:${y + 34}px;width:${w}px;--t:${tilt}deg" aria-hidden="true">${html}</div>`;
-  }).join('') + [[18, 0.12], [82, 0.33], [30, 0.55], [70, 0.78], [22, 0.9]].map(([l, f]) => `<div class="ring" style="left:${l}%;top:${f * H}px" aria-hidden="true"></div>`).join('');
-  board.insertAdjacentHTML('afterbegin', deco);
-
-  // Red string from pin to pin: solid as far as you've got, faded beyond.
-  const W = board.clientWidth, pts = nodes.map((_, i) => { const p = pos(i); return [p.x / 100 * W, p.y + 2]; });
+  // Red string from pin to pin, drawn in column percent so it stays on the pins at any width: solid as far as you've got, faded beyond.
+  const pts = nodes.map((_, i) => { const p = pos(i); return [p.x, p.y + 2]; });
   const seg = (a, b) => `M${a[0]},${a[1]} Q${(a[0] + b[0]) / 2},${(a[1] + b[1]) / 2 + 30} ${b[0]},${b[1]}`;
-  board.insertAdjacentHTML('afterbegin', `<svg class="string" width="${W}" height="${H}" aria-hidden="true">${pts.slice(1).map((p, i) =>
-    `<path d="${seg(pts[i], p)}" class="${nodes[i].done ? 'walked' : ''}"/>`).join('')}</svg>`);
+  const string = `<svg class="string" viewBox="0 0 100 ${H}" preserveAspectRatio="none" aria-hidden="true">${pts.slice(1).map((p, i) =>
+    `<path d="${seg(pts[i], p)}" class="${nodes[i].done ? 'walked' : ''}" vector-effect="non-scaling-stroke"/>`).join('')}</svg>`;
+
+  // Desk clutter across the whole width, coming in from both edges of the screen like the sides of a film's end credits.
+  // Everything is at real-life size against the polaroids (88 mm wide): the second number is the width in millimetres.
+  // Decoration only, never a clue. "mid" pieces sit further in and only show on wide screens.
+  const P = n => `<img src="img/props/${n}.webp" alt="" loading="lazy">`;
+  const paper = (masthead, head, pic) => `<b class="mast">${masthead}</b><span class="date">Price one penny</span><strong>${head}</strong>${pic ? `<img src="${pic}" alt="" loading="lazy">` : ''}<span class="cols"></span>`;
+  const K = [
+    ['news', 230, paper('The Morning Clarion', 'Keeper found dead at foot of lighthouse stair', 'img/aerial-gullrock.jpg')],
+    ['prop', 120, P('mug')],
+    ['note', 127, '<b>Means, motive, opportunity.</b> Who had all three?'],
+    ['prop', 140, P('pipe')],
+    ['cutting', 110, '<strong>Snowbound hall: clockmaker found dead</strong><span class="cols"></span>'],
+    ['prop', 140, P('glasses')],
+    ['ticket', 57, '<b>Simplon-Orient</b><span>1st class</span><span>Lausanne → Milano</span><i>No. 06</i>'],
+    ['news', 220, paper('The Evening Courier', 'Soho club owner dead after last set', 'img/d-bluenote/bar.jpg')],
+    ['sticky', 76, 'Ring the Yard before nine!'],
+    ['prop', 150, P('magnifier')],
+    ['prop', 150, P('notebook')],
+    ['telegram', 190, '<b>Post Office Telegraphs</b>YARD WANTS YOUR REPORT BY MONDAY STOP DO NOT TRUST THE CLOCKS STOP'],
+    ['match', 40, '<b>The Blue Lamp</b><span>Soho</span>'],
+    ['prop', 140, P('pen')],
+    ['cutting', 100, '<strong>Mystery at the circus: fortune teller slain</strong><span class="cols"></span>'],
+    ['prop', 137, P('watch')],
+    ['news', 225, paper('The Yorkshire Herald', 'Death in the snow at Harrowgate', 'img/aerial-harrowgate.jpg')],
+    ['prop', 110, P('candle')],
+    ['doodle', 100, 'Who lied first?<svg viewBox="0 0 120 60" aria-hidden="true"><path d="M8 40c10-22 30-26 40-10s-6 24-14 12M60 30h40m-9-8 9 8-9 8"/><circle cx="104" cy="30" r="13"/></svg>'],
+    ['sticky pink', 76, 'Never trust a tidy crime scene.'],
+    ['prop', 54, P('key')],
+    ['prop', 200, P('gloves')],
+    ['cutting', 110, '<strong>Tomb breach: famous Egyptologist dead</strong><span class="cols"></span>'],
+    ['prop', 55, P('ink')],
+    ['note', 127, '<b>Check every alibi.</b> Then check them again. R.A.'],
+    ['prop', 115, P('pencil')],
+  ];
+  let k = 0; const next = () => K[k++ % K.length];
+  const piece = (side, mid, i, dy) => {
+    const [kind, mm, html] = next(), c = mid ? 16 + (i % 3) * 3 : 2 + (i % 4) * 2.5, left = side < 0 ? c : 100 - c;
+    const tilt = [-9, 7, -4, 11, -13, 5, -6, 9, -2, 13, -8, 4][(i * 3 + (side < 0 ? 0 : 5) + (mid ? 2 : 0)) % 12];
+    return `<div class="deco ${kind}${mid ? ' mid' : ''}" style="left:${left}%;top:${dy}px;--w:${mm};--t:${tilt}deg;--s:${side}" aria-hidden="true">${html}</div>`;
+  };
+  let clutter = '';
+  for (let i = 0; i < nodes.length; i++) {
+    const y = pos(i).y;
+    clutter += piece(-1, false, i, y - 10) + piece(1, false, i, y + 80) + piece(-1, true, i, y + 110) + piece(1, true, i, y - 20);
+  }
+  clutter += [[8, .1], [92, .24], [21, .41], [79, .6], [10, .77], [88, .92]].map(([l, f]) => `<div class="ring" style="left:${l}%;top:${f * H}px" aria-hidden="true"></div>`).join('');
+
+  board.innerHTML = `<div class="clutter">${clutter}</div><div class="col">${string}${trail}</div>`;
 
   board.onclick = e => {
     const b = e.target.closest('.pol[data-i]'); if (!b) return;
