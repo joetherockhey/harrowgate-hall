@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Daily Corpse</title>
+<meta name="description" content="A ten-minute murder mystery for two detectives.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,800;1,600&family=Crimson+Pro:ital,wght@0,400;0,600;1,400&family=Special+Elite&family=Caveat:wght@500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div id="cover"><div class="folder"><p>Fetching the file…</p></div></div>
+
+<div class="wrap">
+  <header>
+    <div class="eyebrow" id="eyebrow"></div>
+    <h1 id="title"></h1>
+    <div class="meta">
+      <span class="pips" id="pips" aria-label="Progress"></span>
+      <span id="stage-label"></span>
+      <span id="clock">⏱ 00:00</span>
+      <button class="linkish" id="reset">Start over</button>
+    </div>
+    <nav role="tablist" id="tabs">
+      <button role="tab" data-tab="brief">Briefing</button>
+      <button role="tab" data-tab="map">Map</button>
+      <button role="tab" data-tab="suspects">Suspects</button>
+      <button role="tab" data-tab="evidence">Evidence</button>
+      <button role="tab" data-tab="notes">Notebook</button>
+      <button role="tab" data-tab="solve">Solve</button>
+    </nav>
+  </header>
+  <main>
+    <section id="brief"></section>
+    <section id="map"><div class="map-wrap"><aside class="room-info" id="room-info"></aside></div></section>
+    <section id="suspects"></section>
+    <section id="evidence"></section>
+    <section id="notes">
+      <h2>Detectives' notebook</h2>
+      <p class="aside">Kept on this device only. Scribble freely.</p>
+      <textarea id="notebook" placeholder="Times, lies, who could see whom…" aria-label="Notebook"></textarea>
+    </section>
+    <section id="solve"></section>
+  </main>
+</div>
+<footer>The Daily Corpse · works of fiction</footer>
+
+<dialog id="reader"><div class="sheet"><button class="x" aria-label="Close" onclick="this.closest('dialog').close()">×</button><div id="reader-body"></div></div></dialog>
+
+<script src="levels.js"></script>
+<script>
+  // case.html?c=<id>. A case that isn't open yet sends you back to the map.
+{ // block scope: engine.js declares its own globals (load, $ ...)
+  const i = LEVELS.findIndex(l => l.id === new URLSearchParams(location.search).get('c'));
+  if (i < 0 || !levelOpen(i)) location.replace('index.html');
+  else {
+    window.LEVEL = { ...LEVELS[i], n: i + 1 };
+    const load = src => new Promise((ok, bad) => { const s = document.createElement('script'); s.src = src; s.onload = ok; s.onerror = bad; document.body.append(s); });
+    load(`cases/${LEVEL.id}.js`).then(() => load('engine.js'));
+  }
+}
+</script>
+</body>
+</html>

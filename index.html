@@ -4,62 +4,68 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>The Daily Corpse</title>
-<meta name="description" content="A new ten-minute murder mystery every day, for two detectives.">
+<meta name="description" content="A trail of ten-minute murder mysteries for two detectives. Solve one to open the next.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,800;1,600&family=Crimson+Pro:ital,wght@0,400;0,600;1,400&family=Special+Elite&family=Caveat:wght@500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,800;1,600&family=Crimson+Pro:ital,wght@0,400;0,600;1,400&family=Special+Elite&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="style.css">
 </head>
-<body>
-<div id="cover"><div class="folder"><p>Fetching today's file…</p></div></div>
+<body class="trail-page">
+<header class="trail-head">
+  <div class="eyebrow">Case files · in order</div>
+  <h1>The Daily <i>Corpse</i></h1>
+  <p>Ten-minute murders for two detectives. Solve a case to open the next file.</p>
+</header>
+<main class="trail" id="trail" aria-label="Case map"></main>
+<section class="bonus">
+  <h2>Bonus files</h2>
+  <div class="cal" id="bonus"></div>
+</section>
+<footer>The Daily Corpse · works of fiction</footer>
 
-<div class="wrap">
-  <header>
-    <div class="eyebrow" id="eyebrow"></div>
-    <h1 id="title"></h1>
-    <div class="meta">
-      <span class="pips" id="pips" aria-label="Progress"></span>
-      <span id="stage-label"></span>
-      <span id="clock">⏱ 00:00</span>
-      <button class="linkish" id="reset">Start over</button>
-    </div>
-    <nav role="tablist" id="tabs">
-      <button role="tab" data-tab="brief">Briefing</button>
-      <button role="tab" data-tab="map">Map</button>
-      <button role="tab" data-tab="suspects">Suspects</button>
-      <button role="tab" data-tab="evidence">Evidence</button>
-      <button role="tab" data-tab="notes">Notebook</button>
-      <button role="tab" data-tab="solve">Solve</button>
-    </nav>
-  </header>
-  <main>
-    <section id="brief"></section>
-    <section id="map"><div class="map-wrap"><aside class="room-info" id="room-info"></aside></div></section>
-    <section id="suspects"></section>
-    <section id="evidence"></section>
-    <section id="notes">
-      <h2>Detectives' notebook</h2>
-      <p class="aside">Kept on this device only. Scribble freely.</p>
-      <textarea id="notebook" placeholder="Times, lies, who could see whom…" aria-label="Notebook"></textarea>
-    </section>
-    <section id="solve"></section>
-  </main>
-</div>
-<footer>The Daily Corpse · a new case every day · works of fiction</footer>
+<dialog id="lvl"><div class="sheet"><button class="x" aria-label="Close" onclick="this.closest('dialog').close()">×</button><div id="lvl-body"></div></div></dialog>
 
-<dialog id="reader"><div class="sheet"><button class="x" aria-label="Close" onclick="this.closest('dialog').close()">×</button><div id="reader-body"></div></div></dialog>
-
-<script src="days.js"></script>
+<script src="levels.js"></script>
 <script>
-  // Pick the case: ?d=YYYY-MM-DD if that day is open, else the latest open day. ?all opens future days (for testing).
-  // ponytail: future days are locked in the browser only; anyone reading cases/ can peek at stage I early.
-{ // block scope: engine.js declares its own globals (load, $ ...)
-  const iso = d => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
-  const q = new URLSearchParams(location.search), today = iso(new Date());
-  const open = DAYS.filter(d => window.PREVIEW || q.has('all') || d.date <= today);
-  window.DAY = open.find(d => d.date === q.get('d')) || open.filter(d => d.date <= today).pop() || open[0] || DAYS[0];
-  const load = src => new Promise((ok, bad) => { const s = document.createElement('script'); s.src = src; s.onload = ok; s.onerror = bad; document.body.append(s); });
-  load(`cases/${DAY.id}.js`).then(() => load('engine.js'));
+{
+  const $ = s => document.querySelector(s), ROW = 180, all = /[?&]all\b/.test(location.search) ? '&all' : '';
+  const stars = n => `<span class="stars" aria-label="${n} of 3 stars">${'★'.repeat(n)}<i>${'★'.repeat(3 - n)}</i></span>`;
+  // Level 1 sits at the bottom and the trail climbs, one sealed file waiting at the top.
+  const nodes = [...LEVELS.map((l, i) => ({ ...l, n: i + 1, open: levelOpen(i), done: solvedCase(l.id) })), { soon: true }];
+  const cur = nodes.findIndex(v => v.open && !v.done), H = nodes.length * ROW + 40, trail = $('#trail');
+  trail.style.height = H + 'px';
+  const pos = i => ({ x: 50 + 28 * Math.sin(i * 1.15), y: H - 90 - i * ROW });   // x in %, y in px
+
+  trail.innerHTML = nodes.map((v, i) => {
+    const { x, y } = pos(i), cls = v.soon ? 'soon' : v.done ? 'done' : v.open ? 'open' : 'locked';
+    return `<button class="lv ${cls} ${i === cur ? 'cur' : ''}" style="left:${x}%;top:${y}px" data-i="${i}" ${v.soon ? 'disabled' : ''}
+        aria-label="${v.soon ? 'More cases coming' : `Case ${v.n}: ${v.open ? v.title : 'locked'}`}">
+      <span class="disc" ${v.soon ? '' : `style="background-image:url(img/${v.id}/plan.jpg)"`}><b>${v.soon ? '?' : v.open ? v.n : '🔒'}</b></span>
+      <span class="lv-name">${v.soon ? 'More files soon' : v.open ? v.title : 'Case ' + v.n}</span>
+      ${v.done ? stars(caseStars(v.id)) : i === cur ? '<span class="lv-go">Play</span>' : ''}
+    </button>`;
+  }).join('');
+
+  // The path behind the files: brass as far as you've got, dotted beyond.
+  const W = trail.clientWidth, pts = nodes.map((_, i) => { const p = pos(i); return [p.x / 100 * W, p.y]; });
+  const seg = (a, b) => `M${a[0]},${a[1]} C${a[0]},${a[1] - ROW / 2} ${b[0]},${b[1] + ROW / 2} ${b[0]},${b[1]}`;
+  trail.insertAdjacentHTML('afterbegin', `<svg class="path" width="${W}" height="${H}" aria-hidden="true">${pts.slice(1).map((p, i) =>
+    `<path d="${seg(pts[i], p)}" class="${nodes[i].done ? 'walked' : ''}"/>`).join('')}</svg>`);
+
+  trail.onclick = e => {
+    const b = e.target.closest('.lv'); if (!b) return;
+    const v = nodes[b.dataset.i];
+    $('#lvl-body').innerHTML = `<div class="kind">Case No. ${v.n}</div>` + (v.open
+      ? `<h2>${v.title}</h2><p>${v.tagline}</p>${v.done ? `<p>${stars(caseStars(v.id))} Solved</p>` : ''}
+         <p class="aside">For two detectives · three stages · about ten minutes</p>
+         <a class="btn" href="case.html?c=${v.id}${all}">${v.done ? 'Reopen the file' : caseSave(v.id).answers?.length ? 'Carry on' : 'Open the file'}</a>`
+      : `<h2>Sealed</h2><p>Solve <b>Case ${v.n - 1}</b> to open this file.</p>`);
+    $('#lvl').showModal();
+  };
+  $('#bonus').innerHTML = TESTS.map(t => `<a class="day test" href="${t.href}"><span class="dow">Bonus</span><span class="dnum">${t.n}</span>
+    <span class="dinfo"><b>${t.title}</b><small>${t.tagline}</small></span><span class="dstat">${solvedCase(t.id) ? '✓' : ''}</span></a>`).join('');
+  // Start the view on the case you're up to.
+  trail.querySelector('.cur')?.scrollIntoView({ block: 'center' });
 }
 </script>
 </body>

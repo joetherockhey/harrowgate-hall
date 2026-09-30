@@ -14,15 +14,15 @@ const ROMAN = ['I', 'II', 'III'];
 const M = CASE.meta;
 if (M) {
   document.title = M.title + (window.SITE ? ' · ' + SITE : '');
-  $('#cover .folder').innerHTML = `<span class="conf">${window.DAY ? dayLabel(DAY.date) : 'Case file'}</span><h1>${M.title}</h1><p>${M.cover}</p>
+  $('#cover .folder').innerHTML = `<span class="conf">${window.LEVEL ? 'Case No. ' + LEVEL.n : 'Case file'}</span><h1>${M.title}</h1><p>${M.cover}</p>
     <p style="font-size:16px">For two detectives · three stages · about ten minutes</p><button class="btn" id="open-file">Open the file</button>`;
   $('#eyebrow').innerHTML = M.eyebrow;
   $('#title').innerHTML = M.titleHtml || M.title;
   $('.map-wrap').insertAdjacentHTML('afterbegin', CASE.stage1.map);
   if (M.aerial) $('#map').insertAdjacentHTML('afterbegin', `<figure class="aerial"><img src="${M.aerial}" alt="" loading="lazy"><figcaption>${M.aerialCaption || 'For the look of the place only: go by the plan below.'}</figcaption></figure>`);
 }
-function dayLabel(iso) { return new Date(iso + 'T12:00').toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'long' }); }
-if (window.DAYS) document.body.insertAdjacentHTML('beforeend', '<button class="corner" type="button" data-cal>📅 Calendar</button>');
+if (window.LEVELS) document.body.insertAdjacentHTML('beforeend', '<a class="corner" href="index.html">🗺 Case map</a>');
+const NEXT = window.LEVEL && LEVELS[LEVEL.n];
 
 async function openSeal(b64, answer) {
   try {
@@ -133,7 +133,7 @@ function renderSolve() {
       ['Honorary Constable', 'The local constable would be proud of you. He is easily pleased.'];
     html += `<div class="solved-stamp">SOLVED</div>
       <div class="rating">Your rank: <b>${rank}</b><br>${line}<br><small>Time on the case: ${fmt((st.end || Date.now()) - st.start)} · wrong accusations: ${st.wrong.join(' / ')} · hints: ${st.hints.join(' / ')}</small>
-        <div class="row" style="margin-top:12px"><button class="btn share" type="button" id="share">Share result</button>${window.DAYS ? '<button class="btn ghost-l" type="button" data-cal>Other cases</button>' : ''}</div></div>
+        <div class="row" style="margin-top:12px"><button class="btn share" type="button" id="share">Share result</button>${NEXT ? `<a class="btn" href="case.html?c=${NEXT.id}">Next case →</a>` : ''}${window.LEVELS ? '<a class="btn ghost-l" href="index.html">Case map</a>' : ''}</div></div>
       ${SOL.html}`;
     $('#solve').innerHTML = html; return;
   }
@@ -185,7 +185,6 @@ document.addEventListener('click', e => {
   if (e.target.closest('[data-pins]')) { showPins = !showPins; renderMap(); return; }
   const rm = e.target.closest('.map [data-room]'); if (rm) { selRoom = rm.dataset.room; renderMap(); if (innerWidth < 820) $('#room-info').scrollIntoView({ behavior: 'smooth', block: 'nearest' }); return; }
   if (e.target.id === 'hint') { st.hints[solved()]++; save(); renderSolve(); return; }
-  if (e.target.closest('[data-cal]')) return openCalendar();
   if (e.target.id === 'share') return share();
 });
 $('#reader').addEventListener('click', e => { if (e.target === $('#reader')) $('#reader').close(); });
@@ -406,30 +405,12 @@ const PZ = {
   },
 };
 
-/* ---------- calendar & sharing ---------- */
-const isoDay = d => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
-const solvedCase = id => { try { return (JSON.parse(localStorage.getItem(id + '-v1')) || {}).answers?.length === 3; } catch { return false; } };
-function openCalendar() {
-  const today = isoDay(new Date()), preview = window.PREVIEW || /[?&]all\b/.test(location.search);
-  const days = DAYS.map(d => {
-    const open = preview || d.date <= today, dt = new Date(d.date + 'T12:00');
-    return `<${open ? `a href="index.html?d=${d.date}${preview ? '&all' : ''}"` : 'div aria-disabled="true"'} class="day ${open ? '' : 'locked'} ${d.id === CASE.id ? 'cur' : ''}">
-      <span class="dow">${dt.toLocaleDateString('en-GB', { weekday: 'short' })}</span><span class="dnum">${dt.getDate()}</span>
-      <span class="dinfo"><b>${open ? d.title : 'Sealed until ' + dt.toLocaleDateString('en-GB', { weekday: 'long' })}</b><small>${open ? d.tagline : '&nbsp;'}</small></span>
-      <span class="dstat">${solvedCase(d.id) ? '✓' : d.date === today ? 'Today' : ''}</span></${open ? 'a' : 'div'}>`;
-  }).join('');
-  const tests = (window.TESTS || []).map(t => `<a class="day test" href="${t.href}"><span class="dow">Test</span><span class="dnum">${t.n}</span>
-      <span class="dinfo"><b>${t.title}</b><small>${t.tagline}</small></span><span class="dstat">${solvedCase(t.id) ? '✓' : ''}</span></a>`).join('');
-  $('#reader-body').innerHTML = `<div class="kind">${window.SITE || 'Case files'}</div><h2>This week's cases</h2>
-    <p class="aside">A new case opens every day at midnight. About ten minutes each.</p><div class="cal">${days}</div>
-    <h3>Test cases</h3><div class="cal">${tests}</div>`;
-  $('#reader').showModal();
-}
+/* ---------- sharing ---------- */
 async function share() {
   const face = i => st.wrong[i] ? '🟥' : st.hints[i] ? '🟨' : '🟩';
   const name = M ? M.title : document.title, n = (a, w) => `${a} ${w}${a === 1 ? '' : 's'}`;
   const hints = st.hints.reduce((a, b) => a + b, 0), wrong = st.wrong.reduce((a, b) => a + b, 0);
-  const head = window.DAY ? `${SITE} #${DAYS.indexOf(DAY) + 1} — ${new Date(DAY.date + 'T12:00').toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'short' })}\n` : '';
+  const head = window.LEVEL ? `${SITE} · Case #${LEVEL.n}\n` : '';
   const text = `${head}${name}\n${[0, 1, 2].map(face).join('')}\n⏱ ${fmt(st.end - st.start)} · 🔍 ${n(hints, 'hint')} · ❌ ${n(wrong, 'wrong accusation')}`;
   try { if (navigator.share) await navigator.share({ text }); else { await navigator.clipboard.writeText(text); toast('Result copied. Paste it to your fellow detective.'); } }
   catch {}

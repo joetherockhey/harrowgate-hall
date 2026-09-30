@@ -273,3 +273,33 @@ svg.ev-ico{fill:none;stroke:currentColor;stroke-width:1.6;stroke-linecap:round;s
 /* painted plan on a light background: dark labels with a cream halo */
 .map.painted.light text{stroke:rgba(251,246,233,.92);stroke-width:4px}
 .map.painted.light .lbl{fill:#2b2219} .map.painted.light .lbl-s{fill:#4a3b2a} .map.painted.light .xdoor{fill:#8e1f1a}
+a.btn{text-decoration:none;display:inline-block}
+/* ---------- case map (index.html) ---------- */
+.trail-head{text-align:center;color:var(--paper);padding:34px 16px 6px}
+.trail-head p{color:#cdbd9b;margin:.2em auto 0;max-width:34em}
+.trail{position:relative;max-width:520px;margin:0 auto;overflow:hidden;background:none;box-shadow:none;border-radius:0;padding:0}
+.trail .path{position:absolute;inset:0;pointer-events:none}
+.trail .path path{fill:none;stroke:#6f5e4a;stroke-width:5;stroke-dasharray:2 12;stroke-linecap:round}
+.trail .path path.walked{stroke:var(--brass);stroke-dasharray:none;stroke-width:7;opacity:.9}
+.lv{position:absolute;transform:translate(-50%,-50px);width:170px;background:none;border:0;padding:0;display:flex;flex-direction:column;align-items:center;gap:6px;color:var(--paper)}
+.lv .disc{width:92px;height:92px;border-radius:50%;background:#2b221a center/cover;border:4px solid var(--brass);box-shadow:0 8px 22px #000a,inset 0 0 0 40px #0006;
+  display:grid;place-items:center;transition:transform .15s}
+.lv:hover .disc{transform:scale(1.06)}
+.lv .disc b{font:800 34px/1 "Playfair Display",serif;color:#fff;text-shadow:0 2px 6px #000}
+.lv-name{font:600 15px/1.2 "Playfair Display",serif;text-align:center;text-shadow:0 1px 4px #000}
+.lv.locked .disc{filter:grayscale(1) brightness(.5);border-color:#6f5e4a}
+.lv.locked .disc b{font-size:28px}
+.lv.locked .lv-name{color:#9c8b73}
+.lv.soon .disc{background:repeating-linear-gradient(45deg,#2b221a 0 10px,#231b14 10px 20px);border:3px dashed #6f5e4a;box-shadow:none}
+.lv.soon .lv-name{color:#9c8b73;font-style:italic}
+.lv.done .disc{border-color:#d9b36a}
+.lv.cur .disc{border-color:#ffd27f;animation:beckon 1.6s ease-in-out infinite}
+@keyframes beckon{50%{box-shadow:0 0 0 10px #ffd27f33,0 8px 22px #000a,inset 0 0 0 40px #0006}}
+@media (prefers-reduced-motion:reduce){.lv.cur .disc{animation:none;box-shadow:0 0 0 8px #ffd27f33,0 8px 22px #000a,inset 0 0 0 40px #0006}}
+.lv-go{font:13px "Special Elite",monospace;letter-spacing:.12em;text-transform:uppercase;background:var(--red);color:#fff;padding:3px 12px;border-radius:3px}
+.stars{color:#ffd27f;letter-spacing:2px;font-size:17px;text-shadow:0 1px 3px #000}
+.stars i{font-style:normal;color:#6f5e4a;text-shadow:none}
+.sheet .stars{text-shadow:none} .sheet .stars i{color:#cdbd9b}
+.bonus{max-width:620px;margin:10px auto 40px;padding:0 16px}
+.bonus h2{color:var(--paper);font:600 20px "Playfair Display",serif;text-align:center}
+.bonus .day{background:var(--paper)}
