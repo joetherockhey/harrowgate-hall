@@ -1,30 +1,9 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
-  <defs>
-    <radialGradient id="bg" cx="50%" cy="30%" r="80%"><stop offset="0" stop-color="#3a2e22"/><stop offset="1" stop-color="#0d0a08"/></radialGradient>
-    <pattern id="tweed" width="26" height="26" patternUnits="userSpaceOnUse" patternTransform="rotate(8)">
-      <rect width="26" height="26" fill="#b08d57"/><path d="M0 0H26M0 13H26" stroke="#8a6a3c" stroke-width="3"/><path d="M0 0V26M13 0V26" stroke="#8a6a3c" stroke-width="3" opacity=".7"/>
-    </pattern>
-    <clipPath id="crown"><path d="M128 304C128 196 186 146 256 146C326 146 384 196 384 304Z"/></clipPath>
-  </defs>
-  <rect width="512" height="512" fill="url(#bg)"/>
-  <!-- deerstalker: back peak, front peak, crown, seams, band, tied flaps -->
-  <path d="M360 296Q424 292 462 330Q400 342 340 322Z" fill="#7a5a30"/>
-  <path d="M152 296Q88 292 50 330Q112 342 172 322Z" fill="#7a5a30"/>
-  <path d="M128 304C128 196 186 146 256 146C326 146 384 196 384 304Z" fill="url(#tweed)"/>
-  <g clip-path="url(#crown)" fill="none" stroke="#5e4424" stroke-width="4">
-    <path d="M256 146V310"/><path d="M256 148C206 180 190 240 196 310"/><path d="M256 148C306 180 322 240 316 310"/>
-  </g>
-  <path d="M124 296Q256 326 388 296L388 318Q256 348 124 318Z" fill="#5e4424"/>
-  <ellipse cx="232" cy="142" rx="22" ry="11" fill="#8a6a3c" transform="rotate(-18 232 142)"/>
-  <ellipse cx="280" cy="142" rx="22" ry="11" fill="#8a6a3c" transform="rotate(18 280 142)"/>
-  <circle cx="256" cy="146" r="8" fill="#5e4424"/>
-  <!-- bent pipe -->
-  <g transform="translate(-75 -100) scale(1.25)">
-  <path d="M320 392C262 416 200 414 148 372" fill="none" stroke="#7a4a22" stroke-width="18" stroke-linecap="round"/>
-  <path d="M170 388L132 360" stroke="#1a1410" stroke-width="16" stroke-linecap="round"/>
-  <path d="M312 362H398L390 432Q356 460 322 432Z" fill="#9a5a2a"/>
-  <path d="M322 372Q326 420 340 440" fill="none" stroke="#c98a4a" stroke-width="6" stroke-linecap="round"/>
-  <ellipse cx="355" cy="362" rx="43" ry="10" fill="#3a2414"/>
-  <path d="M372 350C356 334 384 322 368 304" fill="none" stroke="#e9dcc0" stroke-width="5" stroke-linecap="round" opacity=".6"/>
-  </g>
-</svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><rect width="64" height="64" fill="#17130f"/><g transform="translate(32 38) scale(0.82) translate(-32 -30)"><path d="M32 12C21 12 15 19.5 15 28C15 34 18 37.5 22 39.5V46H42V39.5C46 37.5 49 34 49 28C49 19.5 43 12 32 12Z" fill="#f4ecd8"/><ellipse cx="25.5" cy="29" rx="4.6" ry="5" fill="#17130f"/><ellipse cx="38.5" cy="29" rx="4.6" ry="5" fill="#17130f"/><path d="M32 33.5L29.5 38.5H34.5Z" fill="#17130f"/>
+    <path d="M27 46V42M32 46V42M37 46V42" stroke="#17130f" stroke-width="1.6"/></g><g transform="translate(32 20) scale(0.78) translate(-32 -30)"><defs><pattern id="tw9" width="3.6" height="3.6" patternUnits="userSpaceOnUse" patternTransform="rotate(10)"><rect width="3.6" height="3.6" fill="#b08d57"/>
+      <path d="M0 0H3.6M0 1.8H3.6" stroke="#8a6a3c" stroke-width=".8"/><path d="M0 0V3.6M1.8 0V3.6" stroke="#8a6a3c" stroke-width=".7" opacity=".75"/></pattern><pattern id="fl9" width="3.6" height="3.6" patternUnits="userSpaceOnUse" patternTransform="rotate(10)"><rect width="3.6" height="3.6" fill="#9a7847"/>
+      <path d="M0 0H3.6M0 1.8H3.6" stroke="#6e5230" stroke-width=".8"/><path d="M0 0V3.6M1.8 0V3.6" stroke="#6e5230" stroke-width=".7" opacity=".75"/></pattern></defs>
+      <path d="M44.5 36.5Q54 38.5 61.5 47Q51.5 47.5 42 41Z" fill="url(#fl9)"/><path d="M19.5 36.5Q10 38.5 2.5 47Q12.5 47.5 22 41Z" fill="url(#fl9)"/><path d="M17 38C16 22 23 12.5 32 12.5C41 12.5 48 22 47 38Z" fill="url(#tw9)"/>
+      <path d="M20.5 37.5C19.5 29 23 22 30.5 18.5C31.3 25 31.3 31 31 38Z" fill="url(#fl9)" stroke="#5e4424" stroke-width=".7"/><path d="M43.5 37.5C44.5 29 41 22 33.5 18.5C32.7 25 32.7 31 33 38Z" fill="url(#fl9)" stroke="#5e4424" stroke-width=".7"/>
+      <path d="M19.5 36.5Q10 38.5 2.5 47Q12.5 47.5 22 41Z" fill="none" stroke="#5e4424" stroke-width=".7"/><path d="M44.5 36.5Q54 38.5 61.5 47Q51.5 47.5 42 41Z" fill="none" stroke="#5e4424" stroke-width=".7"/>
+      <path d="M16.5 36Q32 40.5 47.5 36L47.5 40Q32 44.5 16.5 40Z" fill="#5e4424"/><path d="M32 13.5C29 9 23.5 8.5 23.8 12.2C24.1 15.4 29 15 32 13.5Z" fill="#4a3418"/><path d="M32 13.5C35 9 40.5 8.5 40.2 12.2C39.9 15.4 35 15 32 13.5Z" fill="#4a3418"/>
+    <path d="M31 14L28.5 18.5M33 14L35.5 18.5" stroke="#4a3418" stroke-width="1.3" stroke-linecap="round"/><circle cx="32" cy="13.6" r="1.9" fill="#2b1d0e"/></g></svg>
