@@ -14,14 +14,14 @@ const ROMAN = ['I', 'II', 'III'];
 const M = CASE.meta;
 if (M) {
   document.title = M.title + (window.SITE ? ' · ' + SITE : '');
-  $('#cover .folder').innerHTML = `<span class="conf">${window.LEVEL ? 'Case No. ' + LEVEL.n : 'Case file'}</span><h1>${M.title}</h1><p>${M.cover}</p>
+  $('#cover .folder').innerHTML = `<span class="conf">${window.LEVEL ? (LEVEL.n ? 'Case No. ' + LEVEL.n : 'Warm-up') : 'Case file'}</span><h1>${M.title}</h1><p>${M.cover}</p>
     <p style="font-size:16px">Solo or with friends · three stages · about ten minutes</p><button class="btn" id="open-file">Open the file</button>`;
   $('#eyebrow').innerHTML = M.eyebrow;
   $('#title').innerHTML = M.titleHtml || M.title;
   $('.map-wrap').insertAdjacentHTML('afterbegin', CASE.stage1.map);
   if (M.aerial) $('#map').insertAdjacentHTML('afterbegin', `<figure class="aerial"><img src="${M.aerial}" alt="" loading="lazy"><figcaption>${M.aerialCaption || 'For the look of the place only: go by the plan below.'}</figcaption></figure>`);
 }
-if (window.LEVELS) document.body.insertAdjacentHTML('beforeend', '<a class="corner" href="index.html">‹ Case map</a>');
+if (window.LEVELS) document.body.insertAdjacentHTML('beforeend', '<a class="corner" href="board.html">‹ Case board</a>');
 const NEXT = window.LEVEL && LEVELS[LEVEL.n];
 
 async function openSeal(b64, answer) {
@@ -133,7 +133,7 @@ function renderSolve() {
       ['Honorary Constable', 'The local constable would be proud of you. He is easily pleased.'];
     html += `<div class="solved-stamp">SOLVED</div>
       <div class="rating">Your rank: <b>${rank}</b><br>${line}<br><small>Time on the case: ${fmt((st.end || Date.now()) - st.start)} · wrong accusations: ${st.wrong.join(' / ')} · hints: ${st.hints.join(' / ')}</small>
-        <div class="row" style="margin-top:12px"><button class="btn share" type="button" id="share">Share result</button>${NEXT ? `<a class="btn" href="case.html?c=${NEXT.id}">Next case →</a>` : ''}${window.LEVELS ? '<a class="btn ghost-l" href="index.html">Case map</a>' : ''}</div></div>
+        <div class="row" style="margin-top:12px"><button class="btn share" type="button" id="share">Share result</button>${NEXT ? `<a class="btn" href="${NEXT.href || 'case.html?c=' + NEXT.id}">Next case →</a>` : ''}${window.LEVELS ? '<a class="btn ghost-l" href="board.html">Case board</a>' : ''}</div></div>
       ${SOL.html}`;
     $('#solve').innerHTML = html; return;
   }
@@ -411,7 +411,7 @@ async function share() {
   const face = i => st.wrong[i] ? '🟥' : st.hints[i] ? '🟨' : '🟩';
   const name = M ? M.title : document.title, n = (a, w) => `${a} ${w}${a === 1 ? '' : 's'}`;
   const hints = st.hints.reduce((a, b) => a + b, 0), wrong = st.wrong.reduce((a, b) => a + b, 0);
-  const head = window.LEVEL ? `${SITE} · Case #${LEVEL.n}\n` : '';
+  const head = window.LEVEL ? `${SITE} · ${LEVEL.n ? 'Case #' + LEVEL.n : 'Warm-up'}\n` : '';
   const text = `${head}${name}\n${[0, 1, 2].map(face).join('')}\n⏱ ${fmt(st.end - st.start)} · 🔍 ${n(hints, 'hint')} · ❌ ${n(wrong, 'wrong accusation')}`;
   try { if (navigator.share) await navigator.share({ text }); else { await navigator.clipboard.writeText(text); toast('Result copied. Paste it to a friend.'); } }
   catch {}

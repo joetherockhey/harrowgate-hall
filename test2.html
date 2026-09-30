@@ -16,7 +16,7 @@
 
 <div id="cover">
   <div class="folder">
-    <span class="conf">Sample case</span>
+    <span class="conf">Case No. 1</span>
     <h1>Death on Gull Rock</h1>
     <p>Devon &amp; Cornwall Constabulary · August, 1978.<br>A lighthouse keeper lies at the foot of his own stair. Everyone says he fell.</p>
     <p style="font-size:16px">Solo or with friends · three stages · about ten minutes</p>
@@ -26,7 +26,7 @@
 
 <div class="wrap">
   <header>
-    <div class="eyebrow">Sample case · Devon &amp; Cornwall Constabulary</div>
+    <div class="eyebrow">Devon &amp; Cornwall Constabulary · August 1978</div>
     <h1>Death on <i>Gull Rock</i></h1>
     <div class="meta">
       <span class="pips" id="pips" aria-label="Progress"></span>
@@ -94,12 +94,13 @@
     <section id="solve"></section>
   </main>
 </div>
-<footer>A sample case, and a work of fiction. The main event is <a href="test1.html" style="color:inherit">The Harrowgate Hall Affair</a>.</footer>
+<footer>The Daily Corpse · works of fiction</footer>
 
 <dialog id="reader"><div class="sheet"><button class="x" aria-label="Close" onclick="this.closest('dialog').close()">×</button><div id="reader-body"></div></div></dialog>
 
 <script src="example-data.js"></script>
 <script src="levels.js"></script>
+<script>{ const i = LEVELS.findIndex(l => l.id === CASE.id); if (i >= 0) window.LEVEL = { ...LEVELS[i], n: i + 1 }; }</script>
 <script src="engine.js"></script>
 </body>
 </html>

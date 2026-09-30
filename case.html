@@ -53,12 +53,13 @@
 
 <script src="levels.js"></script>
 <script>
-  // case.html?c=<id>. A case that isn't open yet sends you back to the map.
+  // case.html?c=<id>. A case that isn't open yet sends you back to the board.
 { // block scope: engine.js declares its own globals (load, $ ...)
-  const i = LEVELS.findIndex(l => l.id === new URLSearchParams(location.search).get('c'));
-  if (i < 0 || !levelOpen(i)) location.replace('index.html');
+  const id = new URLSearchParams(location.search).get('c'), i = LEVELS.findIndex(l => l.id === id);
+  if (id === WARMUP.id) window.LEVEL = { ...WARMUP, n: 0 };   // the warm-up is always open
+  else if (i >= 0 && levelOpen(i)) window.LEVEL = { ...LEVELS[i], n: i + 1 };
+  if (!window.LEVEL) location.replace('board.html');
   else {
-    window.LEVEL = { ...LEVELS[i], n: i + 1 };
     const load = src => new Promise((ok, bad) => { const s = document.createElement('script'); s.src = src; s.onload = ok; s.onerror = bad; document.body.append(s); });
     load(`cases/${LEVEL.id}.js`).then(() => load('engine.js'));
   }
