@@ -1,6 +1,6 @@
 # The Daily Corpse
 
-A trail of ten-minute murder mysteries for two detectives, on a phone. Solve one to open the next. Each case has three stages and a hands-on
+A trail of ten-minute murder mysteries to solve alone or with friends, on a phone. Solve one to open the next. Each case has three stages and a hands-on
 puzzle (torn letters, Morse, spot the difference, cipher wheels, locks, timelines).
 
 **Play:** https://joetherockhey.github.io/harrowgate-hall/

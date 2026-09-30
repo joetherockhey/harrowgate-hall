@@ -15,7 +15,7 @@ const M = CASE.meta;
 if (M) {
   document.title = M.title + (window.SITE ? ' · ' + SITE : '');
   $('#cover .folder').innerHTML = `<span class="conf">${window.LEVEL ? 'Case No. ' + LEVEL.n : 'Case file'}</span><h1>${M.title}</h1><p>${M.cover}</p>
-    <p style="font-size:16px">For two detectives · three stages · about ten minutes</p><button class="btn" id="open-file">Open the file</button>`;
+    <p style="font-size:16px">Solo or with friends · three stages · about ten minutes</p><button class="btn" id="open-file">Open the file</button>`;
   $('#eyebrow').innerHTML = M.eyebrow;
   $('#title').innerHTML = M.titleHtml || M.title;
   $('.map-wrap').insertAdjacentHTML('afterbegin', CASE.stage1.map);
@@ -190,7 +190,7 @@ document.addEventListener('click', e => {
 $('#reader').addEventListener('click', e => { if (e.target === $('#reader')) $('#reader').close(); });
 
 const WRONG = ["That doesn't hold up. Look again.", "The evidence won't carry that. Try again.", "The Superintendent shakes his head slowly.",
-  "Not quite, detectives.", "The Superintendent would send that back."];
+  "Not quite, detective.", "The Superintendent would send that back."];
 document.addEventListener('submit', async e => {
   if (e.target.id !== 'qform') return;
   e.preventDefault();

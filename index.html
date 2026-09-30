@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>The Daily Corpse</title>
-<meta name="description" content="A trail of ten-minute murder mysteries for two detectives. Solve one to open the next.">
+<meta name="description" content="A trail of ten-minute murder mysteries to solve alone or with friends. Solve one to open the next.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,800;1,600&family=Crimson+Pro:ital,wght@0,400;0,600;1,400&family=Special+Elite&display=swap" rel="stylesheet">
@@ -16,7 +16,7 @@
 <header class="trail-head">
   <div class="eyebrow">Case files · in order</div>
   <h1>The Daily <i>Corpse</i></h1>
-  <p>Ten-minute murders for two detectives. Solve a case to open the next file.</p>
+  <p>Ten-minute murders to crack solo or with friends. Solve a case to open the next file.</p>
 </header>
 <main class="trail" id="trail" aria-label="Case map"></main>
 <section class="bonus">
@@ -59,7 +59,7 @@
     const v = nodes[b.dataset.i];
     $('#lvl-body').innerHTML = `<div class="kind">Case No. ${v.n}</div>` + (v.open
       ? `<h2>${v.title}</h2><p>${v.tagline}</p>${v.done ? `<p>${stars(caseStars(v.id))} Solved</p>` : ''}
-         <p class="aside">For two detectives · three stages · about ten minutes</p>
+         <p class="aside">Solo or with friends · three stages · about ten minutes</p>
          <a class="btn" href="case.html?c=${v.id}${all}">${v.done ? 'Reopen the file' : caseSave(v.id).answers?.length ? 'Carry on' : 'Open the file'}</a>`
       : `<h2>Sealed</h2><p>Solve <b>Case ${v.n - 1}</b> to open this file.</p>`);
     $('#lvl').showModal();
