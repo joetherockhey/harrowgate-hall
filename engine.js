@@ -412,7 +412,7 @@ async function share() {
   const hints = st.hints.reduce((a, b) => a + b, 0), wrong = st.wrong.reduce((a, b) => a + b, 0);
   const head = window.LEVEL ? `${SITE} · Case #${LEVEL.n}\n` : '';
   const text = `${head}${name}\n${[0, 1, 2].map(face).join('')}\n⏱ ${fmt(st.end - st.start)} · 🔍 ${n(hints, 'hint')} · ❌ ${n(wrong, 'wrong accusation')}`;
-  try { if (navigator.share) await navigator.share({ text }); else { await navigator.clipboard.writeText(text); toast('Result copied. Paste it to your fellow detective.'); } }
+  try { if (navigator.share) await navigator.share({ text }); else { await navigator.clipboard.writeText(text); toast('Result copied. Paste it to a friend.'); } }
   catch {}
 }
 
