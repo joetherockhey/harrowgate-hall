@@ -7,18 +7,18 @@
 <meta name="description" content="A trail of ten-minute murder mysteries to solve alone or with friends. Solve one to open the next.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,800;1,600&family=Crimson+Pro:ital,wght@0,400;0,600;1,400&family=Special+Elite&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,800;1,600&family=Crimson+Pro:ital,wght@0,400;0,600;1,400&family=Special+Elite&family=Caveat:wght@600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="style.css">
 <link rel="icon" href="favicon.svg"><link rel="apple-touch-icon" href="icon-180.png"><link rel="manifest" href="manifest.webmanifest">
 <meta name="theme-color" content="#17130f"><meta name="apple-mobile-web-app-title" content="Daily Corpse">
 </head>
-<body class="trail-page">
-<header class="trail-head">
-  <div class="eyebrow">Case files · in order</div>
+<body class="board-page">
+<header class="board-bar">
   <h1>The Daily <i>Corpse</i></h1>
-  <p>Ten-minute murders to crack solo or with friends. Solve a case to open the next file.</p>
+  <span id="tally"></span>
 </header>
-<main class="trail" id="trail" aria-label="Case map"></main>
+<div class="board-intro"><p>Ten-minute murders to crack solo or with friends. Solve a case to open the next file.</p></div>
+<main class="board" id="board" aria-label="Case board"></main>
 <section class="bonus">
   <h2>Bonus files</h2>
   <div class="cal" id="bonus"></div>
@@ -30,32 +30,37 @@
 <script src="levels.js"></script>
 <script>
 {
-  const $ = s => document.querySelector(s), ROW = 180, all = /[?&]all\b/.test(location.search) ? '&all' : '';
+  const $ = s => document.querySelector(s), ROW = 200, all = /[?&]all\b/.test(location.search) ? '&all' : '';
   const stars = n => `<span class="stars" aria-label="${n} of 3 stars">${'★'.repeat(n)}<i>${'★'.repeat(3 - n)}</i></span>`;
-  // Level 1 sits at the bottom and the trail climbs, one sealed file waiting at the top.
+  // Case 1 sits at the bottom of the cork and the board climbs, one blank card waiting at the top.
   const nodes = [...LEVELS.map((l, i) => ({ ...l, n: i + 1, open: levelOpen(i), done: solvedCase(l.id) })), { soon: true }];
-  const cur = nodes.findIndex(v => v.open && !v.done), H = nodes.length * ROW + 40, trail = $('#trail');
-  trail.style.height = H + 'px';
-  const pos = i => ({ x: 50 + 28 * Math.sin(i * 1.15), y: H - 90 - i * ROW });   // x in %, y in px
+  const cur = nodes.findIndex(v => v.open && !v.done), H = nodes.length * ROW + 30, board = $('#board');
+  $('#tally').textContent = `${nodes.filter(v => v.done).length} of ${LEVELS.length} solved`;
+  board.style.height = H + 'px';
+  const pos = i => ({ x: [28, 72, 34, 70, 26, 68, 36][i % 7], y: H - 150 - i * ROW, r: [-3, 4, -2, 3, -4, 2, -3][i % 7] });   // x in %, y in px
 
-  trail.innerHTML = nodes.map((v, i) => {
-    const { x, y } = pos(i), cls = v.soon ? 'soon' : v.done ? 'done' : v.open ? 'open' : 'locked';
-    return `<button class="lv ${cls} ${i === cur ? 'cur' : ''}" style="left:${x}%;top:${y}px" data-i="${i}" ${v.soon ? 'disabled' : ''}
-        aria-label="${v.soon ? 'More cases coming' : `Case ${v.n}: ${v.open ? v.title : 'locked'}`}">
-      <span class="disc" ${v.soon ? '' : `style="background-image:url(img/${v.id}/plan.jpg)"`}><b>${v.soon ? '?' : v.open ? v.n : '🔒'}</b></span>
-      <span class="lv-name">${v.soon ? 'More files soon' : v.open ? v.title : 'Case ' + v.n}</span>
-      ${v.done ? stars(caseStars(v.id)) : i === cur ? '<span class="lv-go">Play</span>' : ''}
-    </button>`;
+  board.innerHTML = nodes.map((v, i) => {
+    const { x, y, r } = pos(i);
+    if (v.soon) return `<div class="pol soon" style="left:${x}%;top:${y}px;--r:${r}deg"><span class="pol-cap">More files soon</span></div>`;
+    const cls = v.done ? 'done' : v.open ? 'open' : 'locked';
+    return `${i === cur ? `<div class="lamp" style="left:${x}%;top:${y + 70}px"></div>` : ''}
+      <button class="pol ${cls} ${i === cur ? 'cur' : ''}" type="button" style="left:${x}%;top:${y}px;--r:${r}deg" data-i="${i}"
+        aria-label="Case ${v.n}: ${v.open ? v.title : 'sealed'}${v.done ? ', solved' : ''}">
+        <span class="pol-pic"><img src="img/${v.id}/${v.pic || 'plan'}.jpg" alt="" width="140" height="104" loading="lazy">${v.done ? '<b class="stamp">Solved</b>' : ''}${v.open ? '' : '<span class="seal" aria-hidden="true"></span>'}</span>
+        <span class="pol-cap">${v.n}. ${v.open ? v.title : 'Sealed'}</span>
+        ${v.done ? stars(caseStars(v.id)) : ''}
+      </button>
+      ${i === cur ? `<span class="tag" style="left:${x}%;top:${y + 196}px">${caseSave(v.id).answers?.length ? 'Carry on' : 'Open the file'}</span>` : ''}`;
   }).join('');
 
-  // The path behind the files: brass as far as you've got, dotted beyond.
-  const W = trail.clientWidth, pts = nodes.map((_, i) => { const p = pos(i); return [p.x / 100 * W, p.y]; });
-  const seg = (a, b) => `M${a[0]},${a[1]} C${a[0]},${a[1] - ROW / 2} ${b[0]},${b[1] + ROW / 2} ${b[0]},${b[1]}`;
-  trail.insertAdjacentHTML('afterbegin', `<svg class="path" width="${W}" height="${H}" aria-hidden="true">${pts.slice(1).map((p, i) =>
+  // Red string from pin to pin: solid as far as you've got, faded beyond.
+  const W = board.clientWidth, pts = nodes.map((_, i) => { const p = pos(i); return [p.x / 100 * W, p.y + 2]; });
+  const seg = (a, b) => `M${a[0]},${a[1]} Q${(a[0] + b[0]) / 2},${(a[1] + b[1]) / 2 + 30} ${b[0]},${b[1]}`;
+  board.insertAdjacentHTML('afterbegin', `<svg class="string" width="${W}" height="${H}" aria-hidden="true">${pts.slice(1).map((p, i) =>
     `<path d="${seg(pts[i], p)}" class="${nodes[i].done ? 'walked' : ''}"/>`).join('')}</svg>`);
 
-  trail.onclick = e => {
-    const b = e.target.closest('.lv'); if (!b) return;
+  board.onclick = e => {
+    const b = e.target.closest('.pol[data-i]'); if (!b) return;
     const v = nodes[b.dataset.i];
     $('#lvl-body').innerHTML = `<div class="kind">Case No. ${v.n}</div>` + (v.open
       ? `<h2>${v.title}</h2><p>${v.tagline}</p>${v.done ? `<p>${stars(caseStars(v.id))} Solved</p>` : ''}
@@ -66,8 +71,8 @@
   };
   $('#bonus').innerHTML = TESTS.map(t => `<a class="day test" href="${t.href}"><span class="dow">Bonus</span><span class="dnum">${t.n}</span>
     <span class="dinfo"><b>${t.title}</b><small>${t.tagline}</small></span><span class="dstat">${solvedCase(t.id) ? '✓' : ''}</span></a>`).join('');
-  // Start the view on the case you're up to.
-  trail.querySelector('.cur')?.scrollIntoView({ block: 'center' });
+  // Open the board on the case you're up to.
+  board.querySelector('.cur')?.scrollIntoView({ block: 'center' });
 }
 </script>
 </body>

@@ -21,7 +21,7 @@ if (M) {
   $('.map-wrap').insertAdjacentHTML('afterbegin', CASE.stage1.map);
   if (M.aerial) $('#map').insertAdjacentHTML('afterbegin', `<figure class="aerial"><img src="${M.aerial}" alt="" loading="lazy"><figcaption>${M.aerialCaption || 'For the look of the place only: go by the plan below.'}</figcaption></figure>`);
 }
-if (window.LEVELS) document.body.insertAdjacentHTML('beforeend', '<a class="corner" href="index.html">🗺 Case map</a>');
+if (window.LEVELS) document.body.insertAdjacentHTML('beforeend', '<a class="corner" href="index.html">‹ Case map</a>');
 const NEXT = window.LEVEL && LEVELS[LEVEL.n];
 
 async function openSeal(b64, answer) {
@@ -165,7 +165,8 @@ function showTab(t) {
   document.querySelectorAll('main > section').forEach(s => s.hidden = s.id !== t);
   try { sessionStorage.setItem(CASE.id + '-tab', t); } catch {}
 }
-$('#tabs').onclick = e => { const b = e.target.closest('button'); if (b) showTab(b.dataset.tab); };
+// With the tab bar along the bottom on phones, a new tab starts at the top of its page rather than wherever the last one was scrolled to.
+$('#tabs').onclick = e => { const b = e.target.closest('button'); if (!b) return; showTab(b.dataset.tab); const m = $('main').getBoundingClientRect().top; if (m < 0) scrollBy(0, m - 8); };
 
 function openEvidence(id) {
   const e = evidence().find(x => x.id === id); if (!e) return;
@@ -228,7 +229,7 @@ document.addEventListener('submit', async e => {
 });
 
 function toast(msg) {
-  const t = document.createElement('div'); t.className = 'toast'; t.textContent = msg; document.body.append(t);
+  const t = document.createElement('div'); t.className = 'toast'; t.setAttribute('role', 'status'); t.textContent = msg; document.body.append(t);
   setTimeout(() => t.remove(), 4200);
 }
 const fmt = ms => { const s = Math.floor(ms / 1000); return `${String(Math.floor(s / 60)).padStart(2, '0')}:${String(s % 60).padStart(2, '0')}`; };
