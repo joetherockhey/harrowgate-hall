@@ -196,6 +196,7 @@ textarea{width:100%;min-height:55vh;border:1px solid var(--line);padding:16px;ba
 .toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:var(--ink);color:var(--paper);padding:14px 22px;border:1px solid var(--brass);
   font:15px "Special Elite",monospace;z-index:60;box-shadow:0 10px 30px #000a;max-width:calc(100vw - 32px)}
 footer{color:#7d6d58;text-align:center;font:13px "Special Elite",monospace;padding:0 16px 30px}
+body.board-page>footer{padding:24px 16px 10px;color:#e6d3a8;text-shadow:0 1px 3px #000}
 .corner{position:fixed;top:14px;right:16px;z-index:55;background:var(--ink);color:var(--paper);border:1px solid var(--brass);padding:8px 14px;
   font:13px "Special Elite",monospace;letter-spacing:.08em;text-decoration:none;border-radius:3px;box-shadow:0 4px 14px #0008}
 .corner:hover{background:var(--brass);color:var(--ink)}
@@ -369,7 +370,7 @@ dialog,.sheet{overscroll-behavior:contain}
 body.board-page{position:relative}
 .backdrop{position:absolute;left:0;right:0;top:0;z-index:0;pointer-events:none;overflow:hidden;background:#140e09;box-sizing:border-box}
 .board-intro,.board,.bonus,body.board-page>footer{position:relative;z-index:1}
-.backdrop .side{position:absolute;left:0;right:0;background:center/cover no-repeat;
+.backdrop .side{position:absolute;left:0;right:0;background:center top/cover no-repeat;
   --fade:linear-gradient(transparent,#000 var(--ft),#000 calc(100% - var(--fb)),transparent);-webkit-mask-image:var(--fade);mask-image:var(--fade)}
 .backdrop .side.l{right:auto;-webkit-mask-image:var(--fade),linear-gradient(90deg,#000 70%,transparent);mask-image:var(--fade),linear-gradient(90deg,#000 70%,transparent);
   -webkit-mask-composite:source-in;mask-composite:intersect}
