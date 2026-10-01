@@ -365,13 +365,16 @@ dialog,.sheet{overscroll-behavior:contain}
 .board{--mm:1.82px;max-width:none;overflow:hidden}
 .board .col{position:absolute;top:0;bottom:0;left:50%;width:min(100%,560px);transform:translateX(-50%);z-index:1}
 .board .string{position:absolute;inset:0;width:100%;height:100%;z-index:0}
-.board .backdrop{position:absolute;inset:0;z-index:0;pointer-events:none}
-.board .side{position:absolute;left:0;right:0;background:center/cover no-repeat;
-  -webkit-mask-image:linear-gradient(transparent,#000 14%,#000 86%,transparent);mask-image:linear-gradient(transparent,#000 14%,#000 86%,transparent)}
-.board .side.l{right:auto;-webkit-mask-image:linear-gradient(transparent,#000 14%,#000 86%,transparent),linear-gradient(90deg,#000 70%,transparent);
-  mask-image:linear-gradient(transparent,#000 14%,#000 86%,transparent),linear-gradient(90deg,#000 70%,transparent);-webkit-mask-composite:source-in;mask-composite:intersect}
-.board .side.r{left:auto;right:0;-webkit-mask-image:linear-gradient(transparent,#000 14%,#000 86%,transparent),linear-gradient(270deg,#000 70%,transparent);
-  mask-image:linear-gradient(transparent,#000 14%,#000 86%,transparent),linear-gradient(270deg,#000 70%,transparent);-webkit-mask-composite:source-in;mask-composite:intersect}
+/* the backdrop spans the whole page; --ft/--fb are how far the top and bottom of each photo fade (0 at the page's very top and bottom) */
+body.board-page{position:relative}
+.backdrop{position:absolute;left:0;right:0;top:0;z-index:0;pointer-events:none;overflow:hidden;background:#140e09;box-sizing:border-box}
+.board-intro,.board,.bonus,body.board-page>footer{position:relative;z-index:1}
+.backdrop .side{position:absolute;left:0;right:0;background:center/cover no-repeat;
+  --fade:linear-gradient(transparent,#000 var(--ft),#000 calc(100% - var(--fb)),transparent);-webkit-mask-image:var(--fade);mask-image:var(--fade)}
+.backdrop .side.l{right:auto;-webkit-mask-image:var(--fade),linear-gradient(90deg,#000 70%,transparent);mask-image:var(--fade),linear-gradient(90deg,#000 70%,transparent);
+  -webkit-mask-composite:source-in;mask-composite:intersect}
+.backdrop .side.r{left:auto;right:0;-webkit-mask-image:var(--fade),linear-gradient(270deg,#000 70%,transparent);mask-image:var(--fade),linear-gradient(270deg,#000 70%,transparent);
+  -webkit-mask-composite:source-in;mask-composite:intersect}
 .board .pol{width:calc(88 * var(--mm));padding:calc(4.5 * var(--mm)) calc(4.5 * var(--mm)) calc(5 * var(--mm))}
 .board .pol-pic{width:calc(79 * var(--mm));height:calc(79 * var(--mm))}
 .lamp{z-index:0} .pol{z-index:2} .tag{z-index:3}

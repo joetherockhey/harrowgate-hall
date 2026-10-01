@@ -13,6 +13,7 @@
 <meta name="theme-color" content="#17130f"><meta name="apple-mobile-web-app-title" content="Daily Corpse">
 </head>
 <body class="board-page">
+<div class="backdrop" id="backdrop" aria-hidden="true"></div>
 <header class="board-bar">
   <h1><a href="index.html" style="color:inherit;text-decoration:none">The Daily <i>Corpse</i></a></h1>
   <span id="tally"></span>
@@ -62,21 +63,27 @@
   const string = `<svg class="string" viewBox="0 0 100 ${H}" preserveAspectRatio="none" aria-hidden="true">${pts.slice(1).map((p, i) =>
     `<path d="${seg(pts[i], p)}" class="${nodes[i].done ? 'walked' : ''}" vector-effect="non-scaling-stroke"/>`).join('')}</svg>`;
 
-  // Behind the trail: three photographs of the cork with desk clutter down both sides, stacked up the board and blended into
-  // each other. Each photo is used exactly once. On phones only each photo's two edges show, at the sides of the screen.
-  const SIDES = ['img/board/side1.jpg', 'img/board/side2.jpg', 'img/board/side3.jpg'], OVER = 140;
+  // Behind the whole page: three photographs of the cork with desk clutter down both sides, stacked from just under the
+  // title bar to the bottom of the page and cross-faded briefly where they meet. Each photo is used exactly once, in an
+  // order that keeps their busiest edges (the Clarion's masthead, the pipe) at the very top and bottom where nothing fades.
+  // On phones only each photo's two edges show, at the sides of the screen.
+  const SIDES = ['img/board/side3.jpg', 'img/board/side2.jpg', 'img/board/side1.jpg'], BLEND = 50;   // bottom to top
+  board.innerHTML = `<div class="col">${string}${trail}</div>`;
   const backdrop = () => {
-    const W = board.clientWidth, th = Math.round((H + OVER * (SIDES.length - 1)) / SIDES.length), iw = th * 1.5;
-    return SIDES.map((u, k) => {
-      const top = H - th - k * (th - OVER);   // side1 at the bottom, by the warm-up
-      if (W >= 760) return `<div class="side" style="top:${top}px;height:${th}px;background-image:url(${u})"></div>`;
+    const bd = $('#backdrop'), top0 = $('.board-bar').offsetHeight;
+    const total = document.documentElement.scrollHeight - top0, W = document.documentElement.clientWidth, n = SIDES.length;
+    const th = Math.round((total + BLEND * (n - 1)) / n), iw = th * 1.39, f = BLEND / th * 100;   // trimmed photos are about 1.39 : 1
+    bd.style.height = total + top0 + 'px'; bd.style.paddingTop = top0 + 'px';   // the strip under the title bar stays dark
+    bd.innerHTML = SIDES.map((u, k) => {
+      const top = top0 + total - th - k * (th - BLEND);
+      const fade = `--ft:${k === n - 1 ? 0 : f}%;--fb:${k === 0 ? 0 : f}%;top:${top}px;height:${th}px;background-image:url(${u})`;
+      if (W >= 760) return `<div class="side" style="${fade}"></div>`;
       const sw = Math.round(W * .3);           // phones: the inner part of each photo's left and right bands, at the screen edges
-      return `<div class="side l" style="top:${top}px;height:${th}px;width:${sw}px;background-image:url(${u});background-size:${iw}px ${th}px;background-position:${sw - iw * .3}px 0"></div>
-        <div class="side r" style="top:${top}px;height:${th}px;width:${sw}px;background-image:url(${u});background-size:${iw}px ${th}px;background-position:${-iw * .7}px 0"></div>`;
+      return `<div class="side l" style="${fade};width:${sw}px;background-size:${iw}px ${th}px;background-position:${sw - iw * .3}px 0"></div>
+        <div class="side r" style="${fade};width:${sw}px;background-size:${iw}px ${th}px;background-position:${-iw * .7}px 0"></div>`;
     }).join('');
   };
-  board.innerHTML = `<div class="backdrop">${backdrop()}</div><div class="col">${string}${trail}</div>`;
-  addEventListener('resize', () => { board.querySelector('.backdrop').innerHTML = backdrop(); });
+  backdrop(); addEventListener('resize', backdrop);
 
   board.onclick = e => {
     const b = e.target.closest('.pol[data-i]'); if (!b) return;
