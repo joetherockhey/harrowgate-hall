@@ -63,21 +63,22 @@
   const string = `<svg class="string" viewBox="0 0 100 ${H}" preserveAspectRatio="none" aria-hidden="true">${pts.slice(1).map((p, i) =>
     `<path d="${seg(pts[i], p)}" class="${nodes[i].done ? 'walked' : ''}" vector-effect="non-scaling-stroke"/>`).join('')}</svg>`;
 
-  // Behind the whole page: one tall photograph of the cork with desk clutter down both sides, from just under the title bar
-  // to the bottom of the page (no joins). On phones only its two edges show, at the sides of the screen.
-  // The code still takes several photos, stacked bottom to top and cross-faded over BLEND px, if the board ever outgrows one.
-  const SIDES = ['img/board/board.jpg'], RATIO = 1024 / 1792, BLEND = 50;
+  // Behind the whole page: three photographs of the cork with desk clutter down both sides, stacked from just under the
+  // title bar to the bottom of the page and cross-faded briefly where they meet. Each photo is used exactly once, in an
+  // order that keeps their busiest edges (the Clarion's masthead, the pipe) at the very top and bottom where nothing fades.
+  // On phones only each photo's two edges show, at the sides of the screen.
+  const SIDES = ['img/board/side3.jpg', 'img/board/side2.jpg', 'img/board/side1.jpg'], BLEND = 50;   // bottom to top
   board.innerHTML = `<div class="col">${string}${trail}</div>`;
   const backdrop = () => {
     const bd = $('#backdrop'), top0 = $('.board-bar').offsetHeight;
     const total = document.documentElement.scrollHeight - top0, W = document.documentElement.clientWidth, n = SIDES.length;
-    const th = Math.round((total + BLEND * (n - 1)) / n), iw = th * RATIO, f = BLEND / th * 100;
+    const th = Math.round((total + BLEND * (n - 1)) / n), iw = th * 1.39, f = BLEND / th * 100;   // trimmed photos are about 1.39 : 1
     bd.style.height = total + top0 + 'px'; bd.style.paddingTop = top0 + 'px';   // the strip under the title bar stays dark
     bd.innerHTML = SIDES.map((u, k) => {
       const top = top0 + total - th - k * (th - BLEND);
       const fade = `--ft:${k === n - 1 ? 0 : f}%;--fb:${k === 0 ? 0 : f}%;top:${top}px;height:${th}px;background-image:url(${u})`;
       if (W >= 760) return `<div class="side" style="${fade}"></div>`;
-      const sw = Math.round(W * .3);           // phones: the photo's middle cork across the screen, with the inner part of its left and right bands at the edges
+      const sw = Math.round(W * .3);           // phones: the inner part of each photo's left and right bands, at the screen edges
       return `<div class="side" style="${fade};background-size:${iw}px ${th}px;background-position:center top"></div>
         <div class="side l" style="${fade};width:${sw}px;background-size:${iw}px ${th}px;background-position:${sw - iw * .3}px 0"></div>
         <div class="side r" style="${fade};width:${sw}px;background-size:${iw}px ${th}px;background-position:${-iw * .7}px 0"></div>`;
