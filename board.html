@@ -68,6 +68,7 @@
   // order that keeps their busiest edges (the Clarion's masthead, the pipe) at the very top and bottom where nothing fades.
   // On phones only each photo's two edges show, at the sides of the screen.
   const SIDES = ['img/board/side3.jpg', 'img/board/side2.jpg', 'img/board/side1.jpg'], BLEND = 50;   // bottom to top
+  const RAILS = ['img/board/rail1.jpg', 'img/board/rail2.jpg'];   // one per join, bottom join first; each used once
   board.innerHTML = `<div class="col">${string}${trail}</div>`;
   const backdrop = () => {
     const bd = $('#backdrop'), top0 = $('.board-bar').offsetHeight;
@@ -82,7 +83,8 @@
       return `<div class="side" style="${fade};background-size:${iw}px ${th}px;background-position:center top"></div>
         <div class="side l" style="${fade};width:${sw}px;background-size:${iw}px ${th}px;background-position:${sw - iw * .3}px 0"></div>
         <div class="side r" style="${fade};width:${sw}px;background-size:${iw}px ${th}px;background-position:${-iw * .7}px 0"></div>`;
-    }).join('');
+    }).join('') + RAILS.slice(0, n - 1).map((u, k) =>   // a wooden dividing rail across each join, like boards mounted side by side
+      `<div class="rail" style="top:${top0 + total - th - k * (th - BLEND) + BLEND / 2}px;background-image:url(${u})"></div>`).join('');
   };
   backdrop(); addEventListener('resize', backdrop);
 

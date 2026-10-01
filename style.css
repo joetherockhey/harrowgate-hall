@@ -376,6 +376,7 @@ body.board-page{position:relative}
   -webkit-mask-composite:source-in;mask-composite:intersect}
 .backdrop .side.r{left:auto;right:0;-webkit-mask-image:var(--fade),linear-gradient(270deg,#000 70%,transparent);mask-image:var(--fade),linear-gradient(270deg,#000 70%,transparent);
   -webkit-mask-composite:source-in;mask-composite:intersect}
+.backdrop .rail{position:absolute;left:0;right:0;height:46px;transform:translateY(-50%);background:center/100% 100% no-repeat;box-shadow:0 7px 12px rgba(0,0,0,.55),0 -2px 6px rgba(0,0,0,.35)}
 .board .pol{width:calc(88 * var(--mm));padding:calc(4.5 * var(--mm)) calc(4.5 * var(--mm)) calc(5 * var(--mm))}
 .board .pol-pic{width:calc(79 * var(--mm));height:calc(79 * var(--mm))}
 .lamp{z-index:0} .pol{z-index:2} .tag{z-index:3}
