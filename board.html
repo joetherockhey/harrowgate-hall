@@ -62,53 +62,21 @@
   const string = `<svg class="string" viewBox="0 0 100 ${H}" preserveAspectRatio="none" aria-hidden="true">${pts.slice(1).map((p, i) =>
     `<path d="${seg(pts[i], p)}" class="${nodes[i].done ? 'walked' : ''}" vector-effect="non-scaling-stroke"/>`).join('')}</svg>`;
 
-  // Desk clutter across the whole width, coming in from both edges of the screen like the sides of a film's end credits.
-  // Everything is at real-life size against the polaroids (88 mm wide): the second number is the width in millimetres.
-  // Decoration only, never a clue. "mid" pieces sit further in and only show on wide screens.
-  const P = n => `<img src="img/props/${n}.webp" alt="" loading="lazy">`;
-  const paper = (masthead, head, pic) => `<b class="mast">${masthead}</b><span class="date">Price one penny</span><strong>${head}</strong>${pic ? `<img src="${pic}" alt="" loading="lazy">` : ''}<span class="cols"></span>`;
-  const K = [
-    ['news', 230, paper('The Morning Clarion', 'Keeper found dead at foot of lighthouse stair', 'img/aerial-gullrock.jpg')],
-    ['prop', 120, P('mug')],
-    ['note', 127, '<b>Means, motive, opportunity.</b> Who had all three?'],
-    ['prop', 140, P('pipe')],
-    ['cutting', 110, '<strong>Snowbound hall: clockmaker found dead</strong><span class="cols"></span>'],
-    ['prop', 140, P('glasses')],
-    ['ticket', 57, '<b>Simplon-Orient</b><span>1st class</span><span>Lausanne → Milano</span><i>No. 06</i>'],
-    ['news', 220, paper('The Evening Courier', 'Soho club owner dead after last set', 'img/d-bluenote/bar.jpg')],
-    ['sticky', 76, 'Ring the Yard before nine!'],
-    ['prop', 150, P('magnifier')],
-    ['prop', 150, P('notebook')],
-    ['telegram', 190, '<b>Post Office Telegraphs</b>YARD WANTS YOUR REPORT BY MONDAY STOP DO NOT TRUST THE CLOCKS STOP'],
-    ['match', 40, '<b>The Blue Lamp</b><span>Soho</span>'],
-    ['prop', 140, P('pen')],
-    ['cutting', 100, '<strong>Mystery at the circus: fortune teller slain</strong><span class="cols"></span>'],
-    ['prop', 137, P('watch')],
-    ['news', 225, paper('The Yorkshire Herald', 'Death in the snow at Harrowgate', 'img/aerial-harrowgate.jpg')],
-    ['prop', 110, P('candle')],
-    ['doodle', 100, 'Who lied first?<svg viewBox="0 0 120 60" aria-hidden="true"><path d="M8 40c10-22 30-26 40-10s-6 24-14 12M60 30h40m-9-8 9 8-9 8"/><circle cx="104" cy="30" r="13"/></svg>'],
-    ['sticky pink', 76, 'Never trust a tidy crime scene.'],
-    ['prop', 54, P('key')],
-    ['prop', 200, P('gloves')],
-    ['cutting', 110, '<strong>Tomb breach: famous Egyptologist dead</strong><span class="cols"></span>'],
-    ['prop', 55, P('ink')],
-    ['note', 127, '<b>Check every alibi.</b> Then check them again. R.A.'],
-    ['prop', 115, P('pencil')],
-  ];
-  let k = 0; const next = () => K[k++ % K.length];
-  const piece = (side, mid, i, dy) => {
-    const [kind, mm, html] = next(), c = mid ? 16 + (i % 3) * 3 : 2 + (i % 4) * 2.5, left = side < 0 ? c : 100 - c;
-    const tilt = [-9, 7, -4, 11, -13, 5, -6, 9, -2, 13, -8, 4][(i * 3 + (side < 0 ? 0 : 5) + (mid ? 2 : 0)) % 12];
-    return `<div class="deco ${kind}${mid ? ' mid' : ''}" style="left:${left}%;top:${dy}px;--w:${mm};--t:${tilt}deg;--s:${side}" aria-hidden="true">${html}</div>`;
+  // Behind the trail: three photographs of the cork with desk clutter down both sides, stacked up the board and blended into
+  // each other. Each photo is used exactly once. On phones only each photo's two edges show, at the sides of the screen.
+  const SIDES = ['img/board/side1.jpg', 'img/board/side2.jpg', 'img/board/side3.jpg'], OVER = 140;
+  const backdrop = () => {
+    const W = board.clientWidth, th = Math.round((H + OVER * (SIDES.length - 1)) / SIDES.length), iw = th * 1.5;
+    return SIDES.map((u, k) => {
+      const top = H - th - k * (th - OVER);   // side1 at the bottom, by the warm-up
+      if (W >= 760) return `<div class="side" style="top:${top}px;height:${th}px;background-image:url(${u})"></div>`;
+      const sw = Math.round(W * .3);           // phones: the inner part of each photo's left and right bands, at the screen edges
+      return `<div class="side l" style="top:${top}px;height:${th}px;width:${sw}px;background-image:url(${u});background-size:${iw}px ${th}px;background-position:${sw - iw * .3}px 0"></div>
+        <div class="side r" style="top:${top}px;height:${th}px;width:${sw}px;background-image:url(${u});background-size:${iw}px ${th}px;background-position:${-iw * .7}px 0"></div>`;
+    }).join('');
   };
-  let clutter = '';
-  for (let i = 0; i < nodes.length; i++) {
-    const y = pos(i).y;
-    clutter += piece(-1, false, i, y - 10) + piece(1, false, i, y + 80) + piece(-1, true, i, y + 110) + piece(1, true, i, y - 20);
-  }
-  clutter += [[8, .1], [92, .24], [21, .41], [79, .6], [10, .77], [88, .92]].map(([l, f]) => `<div class="ring" style="left:${l}%;top:${f * H}px" aria-hidden="true"></div>`).join('');
-
-  board.innerHTML = `<div class="clutter">${clutter}</div><div class="col">${string}${trail}</div>`;
+  board.innerHTML = `<div class="backdrop">${backdrop()}</div><div class="col">${string}${trail}</div>`;
+  addEventListener('resize', () => { board.querySelector('.backdrop').innerHTML = backdrop(); });
 
   board.onclick = e => {
     const b = e.target.closest('.pol[data-i]'); if (!b) return;
